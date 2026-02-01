@@ -1,37 +1,74 @@
 import React from 'react'
+import { motion } from 'framer-motion'
 import SolutionCards from '../components/solutions/SolutionCards'
 import SolutionData from '../components/solutions/SolutionData'
+import Header from '../components/solutions/Header';
 
 function Solution() {
+  // Animation variant for the section headers
+  const fadeInVariant = {
+    hidden: { opacity: 0, y: 30 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      transition: { duration: 0.8, ease: "easeOut" } 
+    }
+  }
+
   return (
-    <div>
-        {/* header */}
-        <header className='bg-[url("src/assets/solution.jpg")] bg-cover h-screen bg-center text-white'>
-           <div className=' pt-36 pl-28'>
-             <h1 className='text-7xl font-bold'>Solutions</h1>
-            <p className='pt-12 font-semibold text-2xl'>Empower Your Business with Our Cutting-Edge Solutions</p>
-           </div>
-        </header>
-        {/*capabilities  */}
-        <div className=' py-20 px-28 flex justify-start gap-48'>
-            <h1 className='w-md text-5xl font-bold '>
-                <span className='border-t-3 w-[10%] text-blue-700  absolute'></span>
-                Capabilities</h1>
-            <p className='w-md font-semibold  '>At Switch Technologies, we provide advanced technology solutions and consulting services to help businesses optimize their operations and achieve their digital transformation goals.</p>
-        </div>
+    <div className='overflow-x-hidden bg-white'>
+        {/* Header */}
+        <Header/>
+
+        {/* Section: Capabilities */}
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={fadeInVariant}
+          className='py-20 px-10 md:px-28 flex flex-col md:flex-row justify-start gap-12 md:gap-48'
+        >
+            <h1 className='md:w-[40%] text-5xl font-bold relative'>
+                <motion.span 
+                  initial={{ width: 0 }}
+                  whileInView={{ width: "60px" }}
+                  transition={{ duration: 1, delay: 0.4 }}
+                  className='border-t-4 border-blue-700 absolute -top-4 left-0'
+                ></motion.span>
+                Capabilities
+            </h1>
+            <p className='md:w-[60%] text-lg font-medium text-gray-700 leading-relaxed'>
+              At Switch Technologies, we provide advanced technology solutions and consulting services to help businesses optimize their operations and achieve their digital transformation goals.
+            </p>
+        </motion.div>
+
         <SolutionCards/>
-        {/* Comprehensive IT Solutions */}
-        <div className=' py-20 px-28 flex justify-start gap-48'>
-            <h1 className='w-md text-5xl font-bold '>
-                <span className='border-t-3 w-[10%] text-blue-700  absolute'></span>
-                Comprehensive IT Solutions</h1>
-            <p className='w-md font-semibold'>Switch Technologies designs, implements & supports world class solutions to meet any IT challenge. Explore some of the solutions that we offer below:</p>
-        </div>
+
+        {/* Section: Comprehensive IT Solutions */}
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={fadeInVariant}
+          className='py-20 px-10 md:px-28 flex flex-col md:flex-row justify-start gap-12 md:gap-48'
+        >
+            <h1 className='md:w-[40%] text-5xl font-bold relative'>
+                <motion.span 
+                  initial={{ width: 0 }}
+                  whileInView={{ width: "60px" }}
+                  transition={{ duration: 1, delay: 0.4 }}
+                  className='border-t-4 border-blue-700 absolute -top-4 left-0'
+                ></motion.span>
+                Comprehensive IT Solutions
+            </h1>
+            <p className='md:w-[60%] text-lg font-medium text-gray-700 leading-relaxed'>
+              Switch Technologies designs, implements & supports world class solutions to meet any IT challenge. Explore some of the solutions that we offer below:
+            </p>
+        </motion.div>
 
         <SolutionData/>
-
     </div>
-    )
+  )
 }
 
 export default Solution

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
@@ -6,38 +7,42 @@ const SignIn = () => {
   const [isMoved, setIsMoved] = useState(false);
   const [showJoke, setShowJoke] = useState(false);
 
-  // Check if form is missing data
+  // Validation
   const isFormInvalid = email === '' || password === '';
 
   const handleHover = () => {
     if (isFormInvalid) {
-      // Toggle position
       setIsMoved(!isMoved);
-      // Show the "Mazak he kya" text
       setShowJoke(true);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("Finally! You filled it and caught me.");
+    if (!isFormInvalid) {
+      alert("Finally! You caught the button. Logging you in...");
+    }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-200 p-4">
-      <form 
+    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 p-4">
+      <motion.form 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
         onSubmit={handleSubmit}
-        className="p-8 bg-white shadow-2xl rounded-2xl w-full max-w-sm flex flex-col gap-5 border border-gray-100"
+        className="p-10 bg-white shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-3xl w-full max-w-sm flex flex-col gap-6 border border-gray-100"
       >
-        <h2 className="text-3xl font-extrabold text-center text-gray-800"> Sign In naah
-            <br/>Legend Form</h2>
+        <div className="text-center">
+          <h2 className="text-3xl font-black text-gray-900 mb-2">Welcome Back</h2>
+          <p className="text-gray-500 text-sm">Please enter your details</p>
+        </div>
         
-        <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-600">Email</label>
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-bold text-gray-700 ml-1">Email</label>
           <input
             type="email"
             placeholder="example@mail.com"
-            className="p-3 border rounded-lg border-gray-300 focus:ring-2 focus:ring-red-400 transition-all outline-none"
+            className="p-3 bg-gray-50 border rounded-xl border-gray-200 focus:ring-2 focus:ring-green-500 focus:bg-white transition-all outline-none"
             value={email}
             onChange={(e) => {
                 setEmail(e.target.value);
@@ -46,12 +51,12 @@ const SignIn = () => {
           />
         </div>
         
-        <div className="flex flex-col gap-1">
-          <label className="text-sm font-medium text-gray-600">Password</label>
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-bold text-gray-700 ml-1">Password</label>
           <input
             type="password"
             placeholder="••••••••"
-            className="p-3 border rounded-lg border-gray-300 focus:ring-2 focus:ring-red-400 transition-all outline-none"
+            className="p-3 bg-gray-50 border rounded-xl border-gray-200 focus:ring-2 focus:ring-green-500 focus:bg-white transition-all outline-none"
             value={password}
             onChange={(e) => {
                 setPassword(e.target.value);
@@ -62,30 +67,39 @@ const SignIn = () => {
 
         {/* Message Container */}
         <div className="h-6 text-center">
+          <AnimatePresence>
             {isFormInvalid && showJoke && (
-                <p className="text-red-600 font-bold animate-bounce text-lg">
-                    Mazak he kya? 😂
-                </p>
+              <motion.p 
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                className="text-red-500 font-bold text-sm italic"
+              >
+                Mazak he kya? Pehle form bharo! 😂
+              </motion.p>
             )}
+          </AnimatePresence>
         </div>
 
-        {/* Button Container */}
-        <div className="relative h-14 w-full bg-gray-50 rounded-lg overflow-hidden border-dashed border-2 border-gray-200">
-          <button
+        {/* The Dodging Button Area */}
+        <div className="relative h-14 w-full bg-gray-100 rounded-xl border-2 border-dashed border-gray-200 flex items-center">
+          <motion.button
             type="submit"
             onMouseEnter={handleHover}
-            // Transition is set to 0.1s for "instant" teleportation
-            style={{
-              transform: isFormInvalid && isMoved ? 'translateX(180px)' : 'translateX(10px)',
-              transition: 'transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
-              top: '8px'
+            animate={{ 
+              x: isFormInvalid && isMoved ? 210 : 10,
             }}
-            className="absolute w-32 bg-indigo-600 text-white py-2 rounded-md font-bold shadow-lg active:scale-95"
+            transition={{ type: "spring", stiffness: 400, damping: 25 }}
+            className={`w-32 py-2 rounded-lg font-bold shadow-md transition-colors ${
+              isFormInvalid 
+              ? "bg-gray-400 text-white cursor-not-allowed" 
+              : "bg-green-600 text-white hover:bg-green-700"
+            }`}
           >
             Login
-          </button>
+          </motion.button>
         </div>
-      </form>
+      </motion.form>
     </div>
   );
 };

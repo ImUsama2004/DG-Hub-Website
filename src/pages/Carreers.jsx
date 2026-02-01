@@ -1,55 +1,104 @@
 import React from 'react'
+import { motion } from "framer-motion";
 import Header from '../components/careers/Header'
 import CardData from '../components/CardData'
-function Carreers() {
+
+// Animation Variants
+const fadeInScale = {
+  hidden: { opacity: 0, scale: 0.95, y: 20 },
+  visible: { 
+    opacity: 1, 
+    scale: 1, 
+    y: 0, 
+    transition: { duration: 0.6, ease: "easeOut" } 
+  }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2
+    }
+  }
+};
+
+function Careers() {
     const careerData = [
-        {
-            title:`Trust`,
-            data:`Trust is the foundation of our company, and we work hard every day to earn and maintain the trust of our customers.`
-        },
-        {
-            title:`Accountability`,
-            data:`We hold ourselves accountable for delivering on our promises, taking ownership of our mistakes and making things right.`
-        },
-        {
-            title:`Integrity`,
-            data:`We are committed to operating with honesty, transparency, and ethical principles in all aspects of our business.`
-        },
-        {
-            title:`Customer Focus`,
-            data:`Our customers are at the center of everything we do, and we strive to deliver products and services that meet and exceed their expectations.`
-        },
-    ]
+        { title: "Trust", data: "Trust is the foundation of our company, and we work hard every day to earn and maintain the trust of our customers." },
+        { title: "Accountability", data: "We hold ourselves accountable for delivering on our promises, taking ownership of our mistakes and making things right." },
+        { title: "Integrity", data: "We are committed to operating with honesty, transparency, and ethical principles in all aspects of our business." },
+        { title: "Customer Focus", data: "Our customers are at the center of everything we do, and we strive to deliver products and services that meet and exceed their expectations." },
+    ];
 
-  return (
-    <div>
-        <Header/>
+    return (
+        <div className="overflow-x-hidden">
+            <Header />
 
-            <div className=' py-20 px-28 flex justify-start gap-48'>
-                <h1 className='w-md text-5xl font-bold '>
-                    <span className='border-t-3 w-[10%] text-blue-700  absolute'></span>
-                        What We Are Built On</h1>
-                <p className='w-md font-semibold  '>
-                    Switch Technologies is built on Trust, Integrity, and Dependability. The company is fair and maintains realistic expectations for their employees while cultivating a symbiotic relationship for growth. A shared vision in customer success and team building is at the foundation of every department.</p>
-            </div>
-            <div className='grid grid-cols-1 md:grid-cols-2 px-28 gap-10 pb-20'>
-                    {careerData.map((item, index) => (
-                    <CardData 
-                        key={index} 
-                        title={item.title} 
-                        data={item.data} 
-                    />
-                    ))}
-                </div>
-            <div className=' py-20 px-28 flex justify-start gap-48'>
-                <h1 className='w-md text-5xl font-bold '>
-                    <span className='border-t-3 w-[10%] text-blue-700  absolute'></span>
-                        Why Us</h1>
-                <p className='w-md font-semibold  '>
-                    Join our team and grow your career with a company that values innovation, collaboration, and personal development. An IT technician can make his mark at Switch Technologies by: providing excellent customer service, taking initiative to develop technical knowledge, staying up to date with the latest industry trends and technologies. The tech should also striving to increase efficiency and reliability by automating processes implement best practices be proactive in developing relationships with customers and partners to build trust establish a positive reputation.</p>
-            </div>
-    </div>
-  )
+            {/* Section 1: What We Are Built On */}
+            <motion.div 
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-100px" }}
+                variants={fadeInScale}
+                className='py-24 px-10 md:px-28 flex flex-col md:flex-row justify-start gap-12 md:gap-48'
+            >
+                <h1 className='md:w-[40%] text-5xl font-bold relative'>
+                    <motion.span 
+                        initial={{ width: 0 }}
+                        whileInView={{ width: "60px" }}
+                        transition={{ duration: 0.8, delay: 0.5 }}
+                        className='border-t-4 border-blue-700 absolute -top-4 left-0'
+                    ></motion.span>
+                    What We Are Built On
+                </h1>
+                <p className='md:w-[60%] font-medium text-gray-700 leading-relaxed text-lg'>
+                    Switch Technologies is built on Trust, Integrity, and Dependability. The company is fair and maintains realistic expectations for their employees while cultivating a symbiotic relationship for growth.
+                </p>
+            </motion.div>
+
+            {/* Core Values Cards: Staggered Animation */}
+            <motion.div 
+                variants={staggerContainer}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true }}
+                className='grid grid-cols-1 md:grid-cols-2 px-10 md:px-28 gap-10 pb-20'
+            >
+                {careerData.map((item, index) => (
+                    <motion.div key={index} variants={fadeInScale}>
+                        <CardData 
+                            title={item.title} 
+                            data={item.data} 
+                        />
+                    </motion.div>
+                ))}
+            </motion.div>
+
+            {/* Section 2: Why Us */}
+            <motion.div 
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-100px" }}
+                variants={fadeInScale}
+                className='py-24 px-10 md:px-28 flex flex-col md:flex-row justify-start gap-12 md:gap-48 bg-gray-50'
+            >
+                <h1 className='md:w-[40%] text-5xl font-bold relative'>
+                    <motion.span 
+                        initial={{ width: 0 }}
+                        whileInView={{ width: "60px" }}
+                        transition={{ duration: 0.8, delay: 0.5 }}
+                        className='border-t-4 border-blue-700 absolute -top-4 left-0'
+                    ></motion.span>
+                    Why Us
+                </h1>
+                <p className='md:w-[60%] font-medium text-gray-700 leading-relaxed text-lg'>
+                    Join our team and grow your career with a company that values innovation, collaboration, and personal development. We strive to increase efficiency and reliability by automating processes and implementing best practices.
+                </p>
+            </motion.div>
+        </div>
+    )
 }
 
-export default Carreers
+export default Careers;
