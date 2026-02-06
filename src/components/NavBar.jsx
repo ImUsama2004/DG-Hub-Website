@@ -1,8 +1,8 @@
-import React from 'react'
-import { Link, useLocation } from "react-router-dom"
-import { ArrowRight } from "lucide-react";
-import { motion } from "framer-motion";
-import logoImg from '../assets/EDP-logo-blue.png'
+import React, { useState } from 'react';
+import { Link, useLocation } from "react-router-dom";
+import { ArrowRight, Menu, X } from "lucide-react"; // Added Menu and X icons
+import { motion, AnimatePresence } from "framer-motion";
+import logoImg from '../assets/EDP-logo-blue.png';
 
 const navItems = [
     { name: "home", path: "/" },
@@ -12,46 +12,46 @@ const navItems = [
     { name: "partner", path: "/partner" },
     { name: "careers", path: "/careers" },
     { name: "contact", path: "/contact" },
-]
+];
 
 function NavBar() {
+  const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
+  const toggleMenu = () => setIsOpen(!isOpen);
+
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-green-900/80 backdrop-blur-md">
+    <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-green-900/90 backdrop-blur-md">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         
         {/* Logo Section */}
-        <Link to="/" className="flex items-center gap-3 font-bold text-xl tracking-tighter cursor-pointer group"> 
+        <Link to="/" className="flex items-center gap-3 font-bold text-xl tracking-tighter cursor-pointer group z-50"> 
           <div className="h-10 w-auto flex items-center justify-center overflow-hidden">
             <img 
               src={logoImg} 
-              alt="DG Hub Logo" 
+              alt="Logo" 
               className="h-full w-full object-contain group-hover:scale-105 transition-transform duration-300"
             />
           </div>
-          {/* <span className="text-green-500">DG Hub</span> */}
         </Link>
 
-        {/* Navigation Links */}
-        <div className="hidden md:flex items-center gap-6 text-sm font-medium">
+        {/* Desktop Navigation Links (Hidden on mobile) */}
+        <div className="hidden lg:flex items-center gap-6 text-sm font-medium">
           {navItems.map((item, index) => {
             const isActive = location.pathname === item.path;
-
             return (
               <Link
                 key={index}
                 to={item.path}
                 className={`relative py-1 transition-colors capitalize ${
-                  isActive ? "text-white font-bold" : "text-gray-400 hover:text-white"
+                  isActive ? "text-white font-bold" : "text-gray-300 hover:text-white"
                 }`}
               >
                 {item.name}
-                {/* Animated underline */}
                 {isActive && (
                   <motion.div 
                     layoutId="navUnderline"
-                    className="absolute -bottom-5.5 left-0 right-0 h-0.5 bg-green-500"
+                    className="absolute -bottom-1 left-0 right-0 h-0.5 bg-green-500"
                   />
                 )}
               </Link>
@@ -59,21 +59,65 @@ function NavBar() {
           })}
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex items-center gap-4">
-          <Link to='/signin'>
-            <button className="hidden sm:inline-flex px-4 py-2 hover:bg-white/10 border border-white/30 rounded text-white transition">
+        {/* Action Buttons & Hamburger */}
+        <div className="flex items-center gap-4 z-50">
+          <Link to='/signin' className="hidden sm:block">
+            <button className="px-4 py-2 hover:bg-white/10 border border-white/30 rounded text-white transition text-sm">
               Sign In
             </button>
           </Link>
-          <button className="px-4 py-2 bg-green-500 rounded hover:bg-green-600 cursor-pointer transition text-white font-semibold flex items-center gap-1">
-            Get Started
+          <button className="px-4 py-2 bg-green-500 rounded hover:bg-green-600 cursor-pointer transition text-white font-semibold flex items-center gap-1 text-sm">
+            <span className="hidden xs:inline">Get Started</span>
             <ArrowRight className="h-4 w-4" />
+          </button>
+          
+          {/* Mobile Menu Toggle Button */}
+          <button 
+            onClick={toggleMenu}
+            className="lg:hidden text-white p-1"
+            aria-label="Toggle Menu"
+          >
+            {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
       </div>
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="lg:hidden bg-green-900 border-b border-white/10 overflow-hidden"
+          >
+            <div className="flex flex-col p-4 space-y-4">
+              {navItems.map((item, index) => (
+                <Link
+                  key={index}
+                  to={item.path}
+                  onClick={() => setIsOpen(false)}
+                  className={`text-lg capitalize ${
+                    location.pathname === item.path ? "text-green-400 font-bold" : "text-white/80"
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              ))}
+              <hr className="border-white/10" />
+              <Link 
+                to="/signin" 
+                onClick={() => setIsOpen(false)}
+                className="text-white/80 py-2"
+              >
+                Sign In
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }
 
-export default NavBar
+export default NavBar;
