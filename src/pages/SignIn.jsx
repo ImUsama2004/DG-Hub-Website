@@ -25,7 +25,7 @@ const SignIn = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50 p-4">
+    <div className="flex flex-col items-center justify-center min-h-screen mt-16 bg-slate-200 p-4">
       <motion.form 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -34,7 +34,7 @@ const SignIn = () => {
       >
         <div className="text-center">
           <h2 className="text-3xl font-black text-gray-900 mb-2">Welcome Back</h2>
-          <p className="text-gray-500 text-sm">Please enter your details</p>
+          <p className="text-gray-500 text-sm">Please enter your Credentials</p>
         </div>
         
         <div className="flex flex-col gap-2">
