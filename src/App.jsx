@@ -10,8 +10,10 @@ import Company from './pages/Company'
 import Carreers from './pages/Carreers'
 import Partners from './pages/Partners'
 import { Home } from "./pages/Home"
+import Product from './pages/Product'
 import { Footer } from './components/Footer'
 import SignIn from './pages/SignIn'
+import ProductDetail from './pages/ProductDetail'
 function App() {
 
   return (
@@ -27,6 +29,8 @@ function App() {
       <Route path='/company' element={<Company/>}/>
       <Route path='/careers' element={<Carreers/>}/>
       <Route path='/partner' element={<Partners/>}/>
+      <Route path='/product' element={<Product/>}/>
+      <Route path='/productdetails' element={<ProductDetail/>}/>
     </Routes>
     <Footer/>
   </Router>
