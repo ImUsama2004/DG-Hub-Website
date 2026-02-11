@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Code2, Monitor, Cpu, Database, Layout, ShieldCheck, PlayCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Header from '../components/contact/Header';
+import Header from "../components/Product/Header";
 
 const ProductDetails = () => {
   const location = useLocation();
@@ -117,14 +117,14 @@ const ProductDetails = () => {
       {/* --- 2. PROJECT DESCRIPTION SECTION --- */}
       <section className="max-w-5xl mx-auto py-12 px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Project Name */}
-        <div className="bg-gray-200 p-5 sm:p-6 md:p-8 rounded-xl shadow-md border-4 border-gray-200 text-center
+        <div className="bg-gray-200 p-5 sm:p-6 md:p-8 rounded-xl shadow-md border-2 border-gray-200 text-center
                         transition-transform transform hover:scale-105 hover:shadow-[0_0_40px_rgba(22,163,74,0.5)] hover:border-green-600">
           <h4 className="text-xl sm:text-2xl md:text-3xl underline font-semibold text-green-600 mb-2">Project Name</h4>
           <p className="text-gray-700 hover:text-black text-base sm:text-lg md:text-xl font-light">{name}</p>
         </div>
 
         {/* Project Detail */}
-        <div className="bg-gray-200 p-5 sm:p-6 md:p-8 rounded-xl shadow-md border-4 border-gray-200 text-center
+        <div className="bg-gray-200 p-5 sm:p-6 md:p-8 rounded-xl shadow-md border-2 border-gray-200 text-center
                         transition-transform transform hover:scale-105 hover:border-green-600 hover:shadow-[0_0_40px_rgba(22,163,74,0.5)]">
           <h4 className="text-xl sm:text-2xl md:text-3xl font-semibold underline text-green-600 mb-2">Project Detail</h4>
           <p className="text-gray-700 hover:text-black text-base sm:text-lg md:text-xl font-light">{desc}</p>
@@ -139,8 +139,8 @@ const ProductDetails = () => {
             {techs.map((tech, i) => (
               <div
                 key={i}
-                className="bg-gray-200 p-4 sm:p-6 rounded-3xl flex flex-col items-center shadow-sm sm:shadow-md gap-2 sm:gap-3 border border-gray-100
-                           transition transform hover:scale-105 hover:shadow-lg hover:bg-gray-300 cursor-pointer"
+                className="bg-gray-200 p-4 sm:p-6 rounded-3xl border-2 flex flex-col items-center shadow-sm sm:shadow-md gap-2 sm:gap-3 border border-gray-100
+                           transition transform hover:scale-105 hover:shadow-lg hover:bg-gray-300 hover:border-green-600 cursor-pointer "
               >
                 <div className={`${tech.color} w-8 sm:w-10 h-8 sm:h-10`}>{tech.icon}</div>
                 <span className="text-gray-900 font-bold text-xs sm:text-sm uppercase tracking-wider text-center">{tech.name}</span>
