@@ -14,6 +14,7 @@ import Product from './pages/Product'
 import { Footer } from './components/Footer'
 import SignIn from './pages/SignIn'
 import ProductDetail from './pages/ProductDetail'
+import JobDetails from './pages/JobDetails'
 function App() {
 
   return (
@@ -31,6 +32,7 @@ function App() {
       <Route path='/partner' element={<Partners/>}/>
       <Route path='/product' element={<Product/>}/>
       <Route path='/productdetails' element={<ProductDetail/>}/>
+      <Route path="/job/:id" element={<JobDetails />} />
     </Routes>
     <Footer/>
   </Router>
