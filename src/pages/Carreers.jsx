@@ -165,18 +165,18 @@ function Careers() {
         <div className="overflow-x-auto bg-white rounded-xl shadow-lg">
           <table className="w-full text-left border-collapse">
             {/* Table Head */}
-            <thead className="bg-gray-100">
+            <thead className="bg-gray-200 hover:bg-gray-300">
               <tr>
-                <th className="p-5 font-semibold text-gray-700">
+                <th className="p-5 font-semibold text-gray-800">
                   Job Title
                 </th>
-                <th className="p-5 font-semibold text-gray-700">
+                <th className="p-5 font-semibold text-gray-800">
                   Location
                 </th>
-                <th className="p-5 font-semibold text-gray-700">
+                <th className="p-5 font-semibold text-gray-800">
                   Experience
                 </th>
-                <th className="p-5 text-center font-semibold text-gray-700">
+                <th className="p-5 text-center font-semibold text-gray-800">
                   Action
                 </th>
               </tr>
@@ -187,7 +187,7 @@ function Careers() {
               {jobs.map((job) => (
                 <tr
                   key={job.id}
-                  className="border-t hover:bg-gray-50 transition"
+                  className="border-t hover:bg-gray-300 transition"
                 >
                   <td className="p-5 font-medium">{job.title}</td>
                   <td className="p-5 text-gray-600">{job.location}</td>
@@ -196,7 +196,7 @@ function Careers() {
                   <td className="p-5 text-center">
                     <button
                       onClick={() => navigate(`/job/${job.id}`)}
-                      className="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition"
+                      className="px-5 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 hover: cursor-pointer transition"
                     >
                       Apply Now
                     </button>
