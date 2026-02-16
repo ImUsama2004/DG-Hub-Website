@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from "react-router-dom";
 import { ArrowRight, Menu, X } from "lucide-react"; // Added Menu and X icons
 import { motion, AnimatePresence } from "framer-motion";
-import logoImg from '../assets/EDP-logo-blue.png';
+import logoImg from '../assets/Logo-01.png';
 
 const navItems = [
     { name: "home", path: "/" },
@@ -25,16 +25,17 @@ function NavBar() {
     <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-green-900/90 backdrop-blur-md">
       <div className="container mx-auto px-4 h-16 flex items-center justify-between">
         
-        {/* Logo Section */}
-        <Link to="/" className="flex items-center gap-3 font-bold text-xl tracking-tighter cursor-pointer group z-50"> 
-          <div className="h-10 w-auto flex items-center justify-center overflow-hidden">
-            <img 
-              src={logoImg} 
-              alt="Logo" 
-              className="h-full w-full object-contain group-hover:scale-105 transition-transform duration-300"
-            />
-          </div>
-        </Link>
+     {/* Logo Section - Increased to h-24 (96px) or h-32 (128px) */}
+<Link to="/" className="flex items-center gap-3 z-50 group"> 
+  <div className="flex items-center justify-center">
+    <img 
+      src={logoImg} 
+      alt="Logo" 
+      /* Changed h-10 to h-24 (96px). Adjust h-32 if you want it even more massive */
+      className="h-24 md:h-28 lg:h-32 w-auto object-contain transition-transform duration-300 group-hover:scale-110"
+    />
+  </div>
+</Link>
 
         {/* Desktop Navigation Links (Hidden on mobile) */}
         <div className="hidden lg:flex items-center gap-6 text-sm font-medium">
