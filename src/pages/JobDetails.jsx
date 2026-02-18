@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import Header from "../components/jobdetails/Header";
+import { div } from "framer-motion/client";
 
 function JobDetails() {
   const { id } = useParams();
@@ -48,7 +50,10 @@ function JobDetails() {
   };
 
   return (
+    <div>
+    <Header/>
     <div className="max-w-5xl mx-auto px-6 py-16">
+      
       {/* Job Title */}
       <h1 className="text-4xl font-bold mb-10 text-green-600 relative cursor-pointer inline-block">
         <span className="relative after:inline-block after:absolute after:bottom-0 after:left-0 after:w-0 after:h-1 after:bg-green-600 after:transition-all after:duration-300 hover:after:w-full">
@@ -118,6 +123,7 @@ function JobDetails() {
           </form>
         </div>
       </div>
+    </div>
     </div>
   );
 }
