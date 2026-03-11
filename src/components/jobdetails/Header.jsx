@@ -1,16 +1,8 @@
 import React from 'react'
 import { motion } from "framer-motion";
 import heroBg from "../../assets/download.png";
-// import { useNavigate } from 'react-router-dom';
 
 function Header() {
-  // const navigate = useNavigate()
-  const scrollToOpenings = () => {
-    const section = document.getElementById('open-positions');
-    if (section) {
-      section.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
   return (
     <header className='relative h-screen w-full overflow-hidden flex items-center'>
       {/* 1. Background Layer */}
@@ -41,7 +33,7 @@ function Header() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className='text-8xl font-bold tracking-tight'
         >
-          Careers
+          Jobs Availaible
         </motion.h1>
 
         {/* Decorative Divider Line */}
@@ -67,18 +59,16 @@ function Header() {
         </motion.p>
 
         {/* Call to Action Button */}
-        <motion.div
+        {/* <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.2 }}
           className="mt-10"
         >
-          <button 
-          onClick={scrollToOpenings}
-          className="px-8 py-4 cursor-pointer bg-green-600 hover:bg-green-500 text-white font-bold rounded-lg transition-all transform hover:scale-105 shadow-xl shadow-green-900/20">
+          <button className="px-8 py-4 bg-green-600 hover:bg-green-500 text-white font-bold rounded-lg transition-all transform hover:scale-105 shadow-xl shadow-green-900/20">
             View Openings
           </button>
-        </motion.div>
+        </motion.div> */}
       </div>
     </header> 
   )
