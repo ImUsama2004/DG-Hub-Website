@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import logoImg from '../assets/Logo-01.png';
 
 const navItems = [
-    { name: "home", path: "/" },
+    // { name: "home", path: "/" },
     { name: "solution", path: "/solution" },
     { name: "services", path: "/services" },
     { name: "company", path: "/company" },
