@@ -1,5 +1,101 @@
 import React, { useState, useRef, useEffect } from "react";
 
+// ── Profile Component (inline) ────────────────────────────────────────────────
+const Field = ({ label, children, isDark }) => (
+  <div className="space-y-1.5">
+    <label className={`block text-xs font-semibold uppercase tracking-wider ${isDark ? 'text-emerald-500/60' : 'text-slate-500'}`}>{label}</label>
+    {children}
+  </div>
+);
+
+function ProfileComponent({ isDark }) {
+  const [profile, setProfile] = useState({
+    name: "Usama Saeed",
+    email: "usama.dev@example.com",
+    phone: "+92 300 1234567",
+    password: "••••••••",
+    location: "Peshawar, Pakistan",
+    bio: "Full Stack Web Developer specialized in React, Next.js, and Tailwind CSS."
+  });
+
+  const inputCls = `w-full px-4 py-3 text-sm rounded-xl border focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all ${
+    isDark
+      ? 'bg-[#0a0f0d] border-emerald-900 text-emerald-50 placeholder-emerald-800'
+      : 'bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400'
+  }`;
+
+  return (
+    <div className="max-w-4xl animate-in fade-in slide-in-from-bottom-4 duration-500">
+      <div className="mb-8">
+        <h2 className={`text-2xl font-bold tracking-tight ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>My Profile</h2>
+        <p className={`text-sm mt-1 ${isDark ? 'text-emerald-500/60' : 'text-slate-500'}`}>Update your personal information and public presence</p>
+      </div>
+
+      <div className={`rounded-3xl border overflow-hidden shadow-sm ${isDark ? 'bg-[#111c18] border-emerald-900/30' : 'bg-white border-slate-100'}`}>
+        {/* Profile Banner */}
+        <div className="h-32 bg-linear-to-r from-emerald-600 to-emerald-800 relative">
+          <div className="absolute -bottom-12 left-8 flex items-end gap-5">
+            <div className={`w-24 h-24 rounded-2xl bg-emerald-500 border-4 flex items-center justify-center text-white text-3xl font-bold shadow-lg ${isDark ? 'border-[#111c18]' : 'border-white'}`}>
+              U
+            </div>
+            <button className="mb-2 px-4 py-1.5 text-xs font-bold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all shadow-md active:scale-95">
+              Update Photo
+            </button>
+          </div>
+        </div>
+
+        <div className="pt-16 p-8 space-y-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <Field label="Full Name" isDark={isDark}>
+              <input className={inputCls} value={profile.name} onChange={e => setProfile({...profile, name: e.target.value})} />
+            </Field>
+
+            <Field label="Email Address" isDark={isDark}>
+              <input className={inputCls} type="email" value={profile.email} onChange={e => setProfile({...profile, email: e.target.value})} />
+            </Field>
+
+            <Field label="Contact Number" isDark={isDark}>
+              <input className={inputCls} value={profile.phone} onChange={e => setProfile({...profile, phone: e.target.value})} />
+            </Field>
+
+            <Field label="Password" isDark={isDark}>
+              <input className={inputCls} type="password" value={profile.password} onChange={e => setProfile({...profile, password: e.target.value})} />
+            </Field>
+
+            <Field label="Location" isDark={isDark}>
+              <input className={inputCls} value={profile.location} onChange={e => setProfile({...profile, location: e.target.value})} />
+            </Field>
+
+            <Field label="Designation" isDark={isDark}>
+              <input className={inputCls} value="Web Developer / Admin" disabled />
+            </Field>
+          </div>
+
+          <Field label="Professional Bio" isDark={isDark}>
+            <textarea
+              className={`${inputCls} resize-none`}
+              rows={4}
+              value={profile.bio}
+              onChange={e => setProfile({...profile, bio: e.target.value})}
+              placeholder="Tell us about yourself..."
+            />
+          </Field>
+
+          <div className="pt-6 border-t border-emerald-900/10 flex justify-end gap-3">
+            <button className={`px-6 py-2.5 text-sm font-medium rounded-xl transition-all ${isDark ? 'text-emerald-400 hover:bg-emerald-900/20' : 'text-slate-600 hover:bg-slate-100'}`}>
+              Cancel
+            </button>
+            <button className="px-10 py-2.5 text-sm font-bold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 shadow-lg shadow-emerald-900/20 active:scale-95 transition-all">
+              Update Profile
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Nav / Icon helpers ────────────────────────────────────────────────────────
 const NAV_ITEMS = [
   { id: "dashboard", label: "Dashboard", icon: SquaresIcon },
   { id: "careers", label: "Career Management", icon: BriefcaseIcon },
@@ -10,7 +106,6 @@ const NAV_ITEMS = [
 
 const TECH_OPTIONS = ["React", "Vue", "Angular", "Next.js", "Node.js", "Express", "MongoDB", "PostgreSQL", "Redis", "Docker", "AWS", "TypeScript", "GraphQL", "Tailwind CSS", "Python", "FastAPI"];
 
-// ── Icons ─────────────────────────────────────────────────────────────────────
 function SquaresIcon() {
   return (
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4">
@@ -139,8 +234,8 @@ function Modal({ open, onClose, title, children, onSubmit, submitLabel = "Submit
   );
 }
 
-// ── Field Components ──────────────────────────────────────────────────────────
-function Field({ label, children, isDark }) {
+// ── Modal Field ───────────────────────────────────────────────────────────────
+function ModalField({ label, children, isDark }) {
   return (
     <div className="space-y-1.5">
       <label className={`block text-xs font-semibold uppercase tracking-wider ${isDark ? 'text-emerald-500/60' : 'text-slate-500'}`}>{label}</label>
@@ -157,16 +252,16 @@ function AddJobModal({ open, onClose, isDark }) {
   const handleSubmit = () => { alert(`Job "${form.title}" added!`); onClose(); setForm({ title: "", exp: "", location: "", workType: "onsite" }); };
   return (
     <Modal open={open} onClose={onClose} title="Post a New Job" onSubmit={handleSubmit} submitLabel="Add Job" isDark={isDark}>
-      <Field label="Job Title" isDark={isDark}>
+      <ModalField label="Job Title" isDark={isDark}>
         <input className={inputCls} placeholder="e.g. Senior Frontend Engineer" value={form.title} onChange={set("title")} />
-      </Field>
-      <Field label="Experience Required" isDark={isDark}>
+      </ModalField>
+      <ModalField label="Experience Required" isDark={isDark}>
         <input className={inputCls} type="number" placeholder="e.g. 3 (years)" value={form.exp} onChange={set("exp")} />
-      </Field>
-      <Field label="Location" isDark={isDark}>
+      </ModalField>
+      <ModalField label="Location" isDark={isDark}>
         <input className={inputCls} placeholder="e.g. New York, NY" value={form.location} onChange={set("location")} />
-      </Field>
-      <Field label="Work Type" isDark={isDark}>
+      </ModalField>
+      <ModalField label="Work Type" isDark={isDark}>
         <div className="flex gap-3">
           {["onsite", "remote", "hybrid"].map(t => (
             <label key={t} className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border cursor-pointer text-sm font-medium transition-all ${form.workType === t ? (isDark ? "border-emerald-500 bg-emerald-900/30 text-emerald-400" : "border-indigo-500 bg-indigo-50 text-indigo-700") : (isDark ? "border-emerald-900 text-emerald-800 hover:bg-emerald-900/10" : "border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50")}`}>
@@ -178,7 +273,7 @@ function AddJobModal({ open, onClose, isDark }) {
             </label>
           ))}
         </div>
-      </Field>
+      </ModalField>
     </Modal>
   );
 }
@@ -195,10 +290,10 @@ function AddPartnerModal({ open, onClose, isDark }) {
   const handleSubmit = () => { alert(`Company "${form.name}" saved!`); onClose(); setForm({ name: "", file: null }); setPreview(null); };
   return (
     <Modal open={open} onClose={onClose} title="Add Partner Company" onSubmit={handleSubmit} submitLabel="Save Company" isDark={isDark}>
-      <Field label="Company Name" isDark={isDark}>
+      <ModalField label="Company Name" isDark={isDark}>
         <input className={inputCls} placeholder="e.g. Acme Corporation" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
-      </Field>
-      <Field label="Company Logo" isDark={isDark}>
+      </ModalField>
+      <ModalField label="Company Logo" isDark={isDark}>
         <div
           onClick={() => fileRef.current.click()}
           className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer hover:border-emerald-500 hover:bg-emerald-500/5 transition-all group ${isDark ? 'border-emerald-900' : 'border-slate-200'}`}
@@ -217,7 +312,7 @@ function AddPartnerModal({ open, onClose, isDark }) {
           )}
           <input ref={fileRef} type="file" className="hidden" accept="image/*" onChange={handleFile} />
         </div>
-      </Field>
+      </ModalField>
     </Modal>
   );
 }
@@ -229,13 +324,13 @@ function AddProductModal({ open, onClose, isDark }) {
   const handleSubmit = () => { alert(`Product "${form.name}" added!`); onClose(); setForm({ name: "", desc: "", tags: [] }); };
   return (
     <Modal open={open} onClose={onClose} title="Add New Product" onSubmit={handleSubmit} submitLabel="Add Product" isDark={isDark}>
-      <Field label="Product Name" isDark={isDark}>
+      <ModalField label="Product Name" isDark={isDark}>
         <input className={inputCls} placeholder="e.g. Analytics Platform" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
-      </Field>
-      <Field label="Product Description" isDark={isDark}>
+      </ModalField>
+      <ModalField label="Product Description" isDark={isDark}>
         <textarea className={`${inputCls} resize-none`} rows={3} placeholder="Describe what this product does..." value={form.desc} onChange={e => setForm(f => ({ ...f, desc: e.target.value }))} />
-      </Field>
-      <Field label="Tech Stack" isDark={isDark}>
+      </ModalField>
+      <ModalField label="Tech Stack" isDark={isDark}>
         <div className="flex flex-wrap gap-2">
           {TECH_OPTIONS.map(tech => (
             <button key={tech} type="button" onClick={() => toggleTag(tech)}
@@ -244,7 +339,7 @@ function AddProductModal({ open, onClose, isDark }) {
             </button>
           ))}
         </div>
-      </Field>
+      </ModalField>
     </Modal>
   );
 }
@@ -272,7 +367,8 @@ function ActionCard({ icon, title, desc, accent, onClick, isDark }) {
 }
 
 // ── Profile Dropdown ──────────────────────────────────────────────────────────
-function ProfileDropdown({ isDark }) {
+// Now accepts onNavigateProfile callback
+function ProfileDropdown({ isDark, onNavigateProfile }) {
   const [open, setOpen] = useState(false);
   const ref = useRef();
   useEffect(() => {
@@ -280,12 +376,18 @@ function ProfileDropdown({ isDark }) {
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
+
+  const handleItemClick = (label) => {
+    setOpen(false);
+    if (label === "Profile") onNavigateProfile();
+  };
+
   return (
     <div ref={ref} className="relative">
       <button onClick={() => setOpen(o => !o)}
         className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all group ${isDark ? 'hover:bg-emerald-900/20' : 'hover:bg-slate-100'}`}
       >
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-white text-xs font-bold shadow-sm">A</div>
+        <div className="w-8 h-8 rounded-full bg-linear-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-white text-xs font-bold shadow-sm">A</div>
         <div className="hidden sm:block text-left">
           <p className={`text-sm font-semibold leading-tight ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>Usama Saeed</p>
           <p className="text-xs text-emerald-600 leading-tight">Admin</p>
@@ -297,7 +399,7 @@ function ProfileDropdown({ isDark }) {
           style={{ animation: "modalIn 0.15s ease both" }}
         >
           {[["Profile", "👤"], ["Settings", "⚙️"], ["Logout", "🚪"]].map(([label, emoji]) => (
-            <button key={label} onClick={() => setOpen(false)}
+            <button key={label} onClick={() => handleItemClick(label)}
               className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors text-left ${isDark ? 'text-emerald-50/70 hover:bg-emerald-900/40 hover:text-white' : 'text-slate-700 hover:bg-slate-50'}`}
             >
               <span>{emoji}</span>{label}
@@ -309,14 +411,34 @@ function ProfileDropdown({ isDark }) {
   );
 }
 
+// ── Page title map ────────────────────────────────────────────────────────────
+const PAGE_TITLES = {
+  dashboard: { title: "Dashboard", sub: "Overview" },
+  careers: { title: "Career Management", sub: "Jobs" },
+  partners: { title: "Partner Companies", sub: "Partners" },
+  products: { title: "Products", sub: "Catalogue" },
+  settings: { title: "Settings", sub: "Preferences" },
+  profile: { title: "My Profile", sub: "Account" },
+};
+
 // ── Main App ──────────────────────────────────────────────────────────────────
 export default function AdminDashboard() {
   const [activeNav, setActiveNav] = useState("dashboard");
-  const [modal, setModal] = useState(null); // "job" | "partner" | "product"
+  // "page" drives what's rendered in <main>; can be a nav id OR "profile"
+  const [page, setPage] = useState("dashboard");
+  const [modal, setModal] = useState(null);
   const [theme, setTheme] = useState("light");
 
   const isDark = theme === "dark";
   const toggleTheme = () => setTheme(prev => prev === "light" ? "dark" : "light");
+
+  const navigateTo = (id) => {
+    setPage(id);
+    // Keep sidebar highlight on nav items; profile isn't in sidebar so don't change activeNav
+    if (id !== "profile") setActiveNav(id);
+  };
+
+  const currentPageMeta = PAGE_TITLES[page] || PAGE_TITLES.dashboard;
 
   return (
     <div className={`flex h-screen transition-colors duration-300 font-sans overflow-hidden ${isDark ? 'bg-[#0a0f0d]' : 'bg-slate-50'}`} style={{ fontFamily: "'DM Sans', system-ui, sans-serif" }}>
@@ -324,10 +446,11 @@ export default function AdminDashboard() {
         @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
         * { box-sizing: border-box; }
         ::-webkit-scrollbar { width: 4px; } ::-webkit-scrollbar-thumb { background: ${isDark ? '#111c18' : '#e2e8f0'}; border-radius: 4px; }
+        @keyframes modalIn{from{opacity:0;transform:scale(0.94) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
       `}</style>
 
       {/* ── Sidebar ── */}
-      <aside className={`w-60 flex-shrink-0 flex flex-col h-full border-r transition-colors ${isDark ? 'bg-[#061a14] border-emerald-900/30' : 'bg-slate-900 border-transparent'}`}>
+      <aside className={`w-60 shrink-0 flex flex-col h-full border-r transition-colors ${isDark ? 'bg-[#061a14] border-emerald-900/30' : 'bg-slate-900 border-transparent'}`}>
         {/* Logo */}
         <div className={`px-5 py-5 border-b ${isDark ? 'border-emerald-900/30' : 'border-slate-800'}`}>
           <div className="flex items-center gap-2.5">
@@ -342,17 +465,16 @@ export default function AdminDashboard() {
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
           <p className="px-3 text-xs font-semibold text-emerald-500/50 uppercase tracking-widest mb-3">Menu</p>
           {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
-            <button key={id} onClick={() => setActiveNav(id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${activeNav === id ? "bg-emerald-600 text-white shadow-sm shadow-emerald-900/50" : (isDark ? "text-emerald-100/40 hover:text-white hover:bg-emerald-800/20" : "text-slate-400 hover:text-white hover:bg-slate-800")}`}
+            <button key={id} onClick={() => navigateTo(id)}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${activeNav === id && page !== "profile" ? "bg-emerald-600 text-white shadow-sm shadow-emerald-900/50" : (isDark ? "text-emerald-100/40 hover:text-white hover:bg-emerald-800/20" : "text-slate-400 hover:text-white hover:bg-slate-800")}`}
             >
               <Icon />{label}
             </button>
           ))}
         </nav>
 
-        {/* Sidebar Footer: Theme & Profile */}
+        {/* Sidebar Footer */}
         <div className={`px-3 py-4 border-t ${isDark ? 'border-emerald-900/30' : 'border-slate-800'}`}>
-          {/* Theme Toggle Button */}
           <button onClick={toggleTheme}
             className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl mb-3 transition-all ${isDark ? 'bg-emerald-900/20 border border-emerald-900/30' : 'bg-slate-800 border border-transparent'}`}
           >
@@ -365,12 +487,12 @@ export default function AdminDashboard() {
               </span>
             </div>
             <div className={`w-7 h-3.5 rounded-full relative transition-colors ${isDark ? 'bg-emerald-500' : 'bg-slate-600'}`}>
-               <div className={`absolute top-0.5 w-2.5 h-2.5 rounded-full bg-white transition-all ${isDark ? 'right-0.5' : 'left-0.5'}`} />
+              <div className={`absolute top-0.5 w-2.5 h-2.5 rounded-full bg-white transition-all ${isDark ? 'right-0.5' : 'left-0.5'}`} />
             </div>
           </button>
 
           <div className="flex items-center gap-2.5 px-2">
-            <div className="w-7 h-7 rounded-full bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-white text-xs font-bold">U</div>
+            <div className="w-7 h-7 rounded-full bg-linear-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-white text-xs font-bold">U</div>
             <div>
               <p className="text-xs font-semibold text-white leading-tight">Usama Saeed</p>
               <p className="text-[10px] text-emerald-500 font-medium leading-tight">Web Developer</p>
@@ -382,96 +504,90 @@ export default function AdminDashboard() {
       {/* ── Main ── */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Nav */}
-        <header className={`h-16 border-b flex items-center justify-between px-6 flex-shrink-0 transition-colors ${isDark ? 'bg-[#0a0f0d] border-emerald-900/30' : 'bg-white border-slate-100'}`}>
+        <header className={`h-16 border-b flex items-center justify-between px-6 shrink-0 transition-colors ${isDark ? 'bg-[#0a0f0d] border-emerald-900/30' : 'bg-white border-slate-100'}`}>
           <div>
-            <h1 className={`text-sm font-semibold ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>Dashboard</h1>
-            <p className="text-[10px] font-bold text-emerald-500 tracking-widest uppercase">Overview</p>
+            <h1 className={`text-sm font-semibold ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>{currentPageMeta.title}</h1>
+            <p className="text-[10px] font-bold text-emerald-500 tracking-widest uppercase">{currentPageMeta.sub}</p>
           </div>
           <div className="flex items-center gap-3">
             <div className={`hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl border text-xs transition-colors ${isDark ? 'bg-emerald-900/10 border-emerald-900/40 text-emerald-800' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35" strokeLinecap="round"/></svg>
               Search...
             </div>
-            <ProfileDropdown isDark={isDark} />
+            {/* Pass the navigate callback into ProfileDropdown */}
+            <ProfileDropdown isDark={isDark} onNavigateProfile={() => navigateTo("profile")} />
           </div>
         </header>
 
         {/* Page Content */}
         <main className="flex-1 overflow-y-auto p-8 lg:p-12">
-          {/* Stats row */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            {[
-              { label: "Active Jobs", value: "12", change: "+3 this month", color: "text-emerald-500", icon: "💼" },
-              { label: "Partner Companies", value: "8", change: "+1 this week", color: "text-emerald-500", icon: "🤝" },
-              { label: "Products Listed", value: "5", change: "2 in review", color: "text-emerald-500", icon: "📦" },
-            ].map(({ label, value, change, color, icon }) => (
-              <div key={label} className={`rounded-3xl border p-6 shadow-sm transition-colors ${isDark ? 'bg-[#111c18] border-emerald-900/30' : 'bg-white border-slate-100'}`}>
-                <div className="flex justify-between items-start mb-4">
-                  <p className={`text-[10px] font-bold uppercase tracking-widest ${isDark ? 'text-emerald-500/50' : 'text-slate-500'}`}>{label}</p>
-                  <span className="text-lg">{icon}</span>
-                </div>
-                <p className={`text-4xl font-black ${color} mb-1`}>{value}</p>
-                <p className={`text-xs font-medium ${isDark ? 'text-emerald-900' : 'text-slate-400'}`}>{change}</p>
-              </div>
-            ))}
-          </div>
 
-          {/* Section header */}
-          <div className="mb-6">
-            <h2 className={`text-xl font-bold tracking-tight ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>Quick Actions</h2>
-            <p className={`text-sm mt-0.5 ${isDark ? 'text-emerald-500/60' : 'text-slate-400'}`}>Manage your website content from here</p>
-          </div>
+          {/* ── Profile Page ── */}
+          {page === "profile" && <ProfileComponent isDark={isDark} />}
 
-          {/* Action Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl">
-            <ActionCard
-              isDark={isDark}
-              icon={<PlusJobIcon />}
-              title="Add Job"
-              desc="Post a new job opportunity to your careers page."
-              accent="bg-emerald-500/5"
-              onClick={() => setModal("job")}
-            />
-            <ActionCard
-              isDark={isDark}
-              icon={<PartnerIcon />}
-              title="Add Partner Company"
-              desc="Showcase a new partner on your website."
-              accent="bg-emerald-500/5"
-              onClick={() => setModal("partner")}
-            />
-            <ActionCard
-              isDark={isDark}
-              icon={<ProductIcon />}
-              title="Add New Product"
-              desc="List a new product with its tech stack and details."
-              accent="bg-emerald-500/5"
-              onClick={() => setModal("product")}
-            />
-          </div>
-
-          {/* Recent activity placeholder */}
-          <div className="mt-12 max-w-4xl">
-            <h2 className={`text-sm font-bold mb-4 ${isDark ? 'text-emerald-500/80' : 'text-slate-700'}`}>Recent Activity</h2>
-            <div className={`rounded-2xl border shadow-sm divide-y ${isDark ? 'bg-[#111c18] border-emerald-900/30 divide-emerald-900/20' : 'bg-white border-slate-100 divide-slate-50'}`}>
-              {[
-                { action: "New job posted", detail: "Senior Designer · Remote", time: "2h ago", dot: "bg-emerald-500" },
-                { action: "Partner added", detail: "TechCorp Inc.", time: "1d ago", dot: "bg-emerald-400" },
-                { action: "Product updated", detail: "Analytics Platform v2.0", time: "3d ago", dot: "bg-emerald-300" },
-              ].map(({ action, detail, time, dot }) => (
-                <div key={detail} className="flex items-center justify-between px-6 py-4">
-                  <div className="flex items-center gap-4">
-                    <span className={`w-2 h-2 rounded-full ${dot} shadow-sm`} />
-                    <div>
-                      <p className={`text-sm font-semibold ${isDark ? 'text-emerald-50/90' : 'text-slate-700'}`}>{action}</p>
-                      <p className={`text-xs ${isDark ? 'text-emerald-500/40' : 'text-slate-400'}`}>{detail}</p>
+          {/* ── Dashboard Page ── */}
+          {page === "dashboard" && (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+                {[
+                  { label: "Active Jobs", value: "12", change: "+3 this month", color: "text-emerald-500", icon: "💼" },
+                  { label: "Partner Companies", value: "8", change: "+1 this week", color: "text-emerald-500", icon: "🤝" },
+                  { label: "Products Listed", value: "5", change: "2 in review", color: "text-emerald-500", icon: "📦" },
+                ].map(({ label, value, change, color, icon }) => (
+                  <div key={label} className={`rounded-3xl border p-6 shadow-sm transition-colors ${isDark ? 'bg-[#111c18] border-emerald-900/30' : 'bg-white border-slate-100'}`}>
+                    <div className="flex justify-between items-start mb-4">
+                      <p className={`text-[10px] font-bold uppercase tracking-widest ${isDark ? 'text-emerald-500/50' : 'text-slate-500'}`}>{label}</p>
+                      <span className="text-lg">{icon}</span>
                     </div>
+                    <p className={`text-4xl font-black ${color} mb-1`}>{value}</p>
+                    <p className={`text-xs font-medium ${isDark ? 'text-emerald-900' : 'text-slate-400'}`}>{change}</p>
                   </div>
-                  <span className={`text-[10px] font-bold ${isDark ? 'text-emerald-900' : 'text-slate-400'}`}>{time}</span>
+                ))}
+              </div>
+
+              <div className="mb-6">
+                <h2 className={`text-xl font-bold tracking-tight ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>Quick Actions</h2>
+                <p className={`text-sm mt-0.5 ${isDark ? 'text-emerald-500/60' : 'text-slate-400'}`}>Manage your website content from here</p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl">
+                <ActionCard isDark={isDark} icon={<PlusJobIcon />} title="Add Job" desc="Post a new job opportunity to your careers page." accent="bg-emerald-500/5" onClick={() => setModal("job")} />
+                <ActionCard isDark={isDark} icon={<PartnerIcon />} title="Add Partner Company" desc="Showcase a new partner on your website." accent="bg-emerald-500/5" onClick={() => setModal("partner")} />
+                <ActionCard isDark={isDark} icon={<ProductIcon />} title="Add New Product" desc="List a new product with its tech stack and details." accent="bg-emerald-500/5" onClick={() => setModal("product")} />
+              </div>
+
+              <div className="mt-12 max-w-4xl">
+                <h2 className={`text-sm font-bold mb-4 ${isDark ? 'text-emerald-500/80' : 'text-slate-700'}`}>Recent Activity</h2>
+                <div className={`rounded-2xl border shadow-sm divide-y ${isDark ? 'bg-[#111c18] border-emerald-900/30 divide-emerald-900/20' : 'bg-white border-slate-100 divide-slate-50'}`}>
+                  {[
+                    { action: "New job posted", detail: "Senior Designer · Remote", time: "2h ago", dot: "bg-emerald-500" },
+                    { action: "Partner added", detail: "TechCorp Inc.", time: "1d ago", dot: "bg-emerald-400" },
+                    { action: "Product updated", detail: "Analytics Platform v2.0", time: "3d ago", dot: "bg-emerald-300" },
+                  ].map(({ action, detail, time, dot }) => (
+                    <div key={detail} className="flex items-center justify-between px-6 py-4">
+                      <div className="flex items-center gap-4">
+                        <span className={`w-2 h-2 rounded-full ${dot} shadow-sm`} />
+                        <div>
+                          <p className={`text-sm font-semibold ${isDark ? 'text-emerald-50/90' : 'text-slate-700'}`}>{action}</p>
+                          <p className={`text-xs ${isDark ? 'text-emerald-500/40' : 'text-slate-400'}`}>{detail}</p>
+                        </div>
+                      </div>
+                      <span className={`text-[10px] font-bold ${isDark ? 'text-emerald-900' : 'text-slate-400'}`}>{time}</span>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              </div>
+            </>
+          )}
+
+          {/* ── Other nav pages (placeholder) ── */}
+          {["careers", "partners", "products", "settings"].includes(page) && (
+            <div className="flex flex-col items-center justify-center h-full gap-4 opacity-40">
+              <div className={`text-6xl`}>🚧</div>
+              <p className={`text-sm font-semibold ${isDark ? 'text-emerald-500' : 'text-slate-500'}`}>{currentPageMeta.title} — coming soon</p>
             </div>
-          </div>
+          )}
+
         </main>
       </div>
 
