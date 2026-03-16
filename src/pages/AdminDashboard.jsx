@@ -32,13 +32,12 @@ function ProfileComponent({ isDark }) {
       </div>
 
       <div className={`rounded-3xl border overflow-hidden shadow-sm ${isDark ? 'bg-[#111c18] border-emerald-900/30' : 'bg-white border-slate-100'}`}>
-        {/* Profile Banner */}
         <div className="h-32 bg-linear-to-r from-emerald-600 to-emerald-800 relative">
           <div className="absolute -bottom-12 left-8 flex items-end gap-5">
             <div className={`w-24 h-24 rounded-2xl bg-emerald-500 border-4 flex items-center justify-center text-white text-3xl font-bold shadow-lg ${isDark ? 'border-[#111c18]' : 'border-white'}`}>
               U
             </div>
-            <button className="mb-2 px-4 py-1.5 text-xs font-bold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all shadow-md active:scale-95">
+            <button style={{ cursor: 'pointer' }} className="mb-2 px-4 py-1.5 text-xs font-bold bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition-all shadow-md active:scale-95">
               Update Photo
             </button>
           </div>
@@ -49,23 +48,18 @@ function ProfileComponent({ isDark }) {
             <Field label="Full Name" isDark={isDark}>
               <input className={inputCls} value={profile.name} onChange={e => setProfile({...profile, name: e.target.value})} />
             </Field>
-
             <Field label="Email Address" isDark={isDark}>
               <input className={inputCls} type="email" value={profile.email} onChange={e => setProfile({...profile, email: e.target.value})} />
             </Field>
-
             <Field label="Contact Number" isDark={isDark}>
               <input className={inputCls} value={profile.phone} onChange={e => setProfile({...profile, phone: e.target.value})} />
             </Field>
-
             <Field label="Password" isDark={isDark}>
               <input className={inputCls} type="password" value={profile.password} onChange={e => setProfile({...profile, password: e.target.value})} />
             </Field>
-
             <Field label="Location" isDark={isDark}>
               <input className={inputCls} value={profile.location} onChange={e => setProfile({...profile, location: e.target.value})} />
             </Field>
-
             <Field label="Designation" isDark={isDark}>
               <input className={inputCls} value="Web Developer / Admin" disabled />
             </Field>
@@ -82,10 +76,10 @@ function ProfileComponent({ isDark }) {
           </Field>
 
           <div className="pt-6 border-t border-emerald-900/10 flex justify-end gap-3">
-            <button className={`px-6 py-2.5 text-sm font-medium rounded-xl transition-all ${isDark ? 'text-emerald-400 hover:bg-emerald-900/20' : 'text-slate-600 hover:bg-slate-100'}`}>
+            <button style={{ cursor: 'pointer' }} className={`px-6 py-2.5 text-sm font-medium rounded-xl transition-all ${isDark ? 'text-emerald-400 hover:bg-emerald-900/20' : 'text-slate-600 hover:bg-slate-100'}`}>
               Cancel
             </button>
-            <button className="px-10 py-2.5 text-sm font-bold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 shadow-lg shadow-emerald-900/20 active:scale-95 transition-all">
+            <button style={{ cursor: 'pointer' }} className="px-10 py-2.5 text-sm font-bold text-white bg-emerald-600 rounded-xl hover:bg-emerald-700 shadow-lg shadow-emerald-900/20 active:scale-95 transition-all">
               Update Profile
             </button>
           </div>
@@ -144,10 +138,18 @@ function GearIcon() {
     </svg>
   );
 }
-function BulbIcon({ isDark }) {
+function SunIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill={isDark ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" className="w-4 h-4 transition-colors">
-      <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41m12.72-12.72l-1.41 1.41M15 12a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round" />
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" strokeLinecap="round" />
+    </svg>
+  );
+}
+function MoonIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -215,16 +217,16 @@ function Modal({ open, onClose, title, children, onSubmit, submitLabel = "Submit
       >
         <div className={`flex items-center justify-between px-6 pt-6 pb-4 border-b ${isDark ? 'border-emerald-900/30' : 'border-slate-100'}`}>
           <h2 className={`text-base font-semibold tracking-tight ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>{title}</h2>
-          <button onClick={onClose} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all">
+          <button style={{ cursor: 'pointer' }} onClick={onClose} className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all">
             <XIcon />
           </button>
         </div>
         <div className="px-6 py-5 space-y-4">{children}</div>
         <div className="flex items-center justify-end gap-2 px-6 pb-6 pt-2">
-          <button onClick={onClose} className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${isDark ? 'bg-emerald-950/40 text-emerald-400 hover:bg-emerald-950' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
+          <button style={{ cursor: 'pointer' }} onClick={onClose} className={`px-4 py-2 text-sm font-medium rounded-lg transition-all ${isDark ? 'bg-emerald-950/40 text-emerald-400 hover:bg-emerald-950' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
             Cancel
           </button>
-          <button onClick={onSubmit} className="px-5 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 active:scale-95 transition-all shadow-sm">
+          <button style={{ cursor: 'pointer' }} onClick={onSubmit} className="px-5 py-2 text-sm font-semibold text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 active:scale-95 transition-all shadow-sm">
             {submitLabel}
           </button>
         </div>
@@ -234,7 +236,6 @@ function Modal({ open, onClose, title, children, onSubmit, submitLabel = "Submit
   );
 }
 
-// ── Modal Field ───────────────────────────────────────────────────────────────
 function ModalField({ label, children, isDark }) {
   return (
     <div className="space-y-1.5">
@@ -244,7 +245,6 @@ function ModalField({ label, children, isDark }) {
   );
 }
 
-// ── Modals ────────────────────────────────────────────────────────────────────
 function AddJobModal({ open, onClose, isDark }) {
   const [form, setForm] = useState({ title: "", exp: "", location: "", workType: "onsite" });
   const set = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }));
@@ -264,7 +264,7 @@ function AddJobModal({ open, onClose, isDark }) {
       <ModalField label="Work Type" isDark={isDark}>
         <div className="flex gap-3">
           {["onsite", "remote", "hybrid"].map(t => (
-            <label key={t} className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border cursor-pointer text-sm font-medium transition-all ${form.workType === t ? (isDark ? "border-emerald-500 bg-emerald-900/30 text-emerald-400" : "border-indigo-500 bg-indigo-50 text-indigo-700") : (isDark ? "border-emerald-900 text-emerald-800 hover:bg-emerald-900/10" : "border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50")}`}>
+            <label key={t} style={{ cursor: 'pointer' }} className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium transition-all ${form.workType === t ? (isDark ? "border-emerald-500 bg-emerald-900/30 text-emerald-400" : "border-indigo-500 bg-indigo-50 text-indigo-700") : (isDark ? "border-emerald-900 text-emerald-800 hover:bg-emerald-900/10" : "border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50")}`}>
               <input type="radio" className="hidden" value={t} checked={form.workType === t} onChange={set("workType")} />
               <span className={`w-3 h-3 rounded-full border-2 flex items-center justify-center ${form.workType === t ? (isDark ? "border-emerald-500" : "border-indigo-500") : (isDark ? "border-emerald-900" : "border-slate-300")}`}>
                 {form.workType === t && <span className={`w-1.5 h-1.5 rounded-full block ${isDark ? "bg-emerald-500" : "bg-indigo-500"}`} />}
@@ -294,9 +294,8 @@ function AddPartnerModal({ open, onClose, isDark }) {
         <input className={inputCls} placeholder="e.g. Acme Corporation" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
       </ModalField>
       <ModalField label="Company Logo" isDark={isDark}>
-        <div
-          onClick={() => fileRef.current.click()}
-          className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer hover:border-emerald-500 hover:bg-emerald-500/5 transition-all group ${isDark ? 'border-emerald-900' : 'border-slate-200'}`}
+        <div onClick={() => fileRef.current.click()} style={{ cursor: 'pointer' }}
+          className={`border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center hover:border-emerald-500 hover:bg-emerald-500/5 transition-all group ${isDark ? 'border-emerald-900' : 'border-slate-200'}`}
         >
           {preview ? (
             <img src={preview} alt="logo" className="h-16 object-contain rounded-lg" />
@@ -333,7 +332,7 @@ function AddProductModal({ open, onClose, isDark }) {
       <ModalField label="Tech Stack" isDark={isDark}>
         <div className="flex flex-wrap gap-2">
           {TECH_OPTIONS.map(tech => (
-            <button key={tech} type="button" onClick={() => toggleTag(tech)}
+            <button key={tech} type="button" style={{ cursor: 'pointer' }} onClick={() => toggleTag(tech)}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${form.tags.includes(tech) ? "bg-emerald-600 text-white shadow-sm" : (isDark ? "bg-emerald-900/20 text-emerald-700 hover:bg-emerald-900/40" : "bg-slate-100 text-slate-600 hover:bg-slate-200")}`}>
               {tech}
             </button>
@@ -344,10 +343,9 @@ function AddProductModal({ open, onClose, isDark }) {
   );
 }
 
-// ── Action Card ───────────────────────────────────────────────────────────────
 function ActionCard({ icon, title, desc, accent, onClick, isDark }) {
   return (
-    <button onClick={onClick}
+    <button onClick={onClick} style={{ cursor: 'pointer' }}
       className={`group relative flex flex-col items-start gap-5 p-7 rounded-2xl border transition-all duration-300 text-left w-full overflow-hidden ${isDark ? 'bg-[#111c18] border-emerald-900/40 hover:border-emerald-500/50 hover:-translate-y-1.5' : 'bg-white border-slate-200/80 shadow-sm hover:shadow-xl hover:-translate-y-1.5'}`}
     >
       <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${accent}`} style={{ background: "linear-gradient(135deg, transparent 60%, rgba(0,0,0,0.02))" }} />
@@ -366,8 +364,6 @@ function ActionCard({ icon, title, desc, accent, onClick, isDark }) {
   );
 }
 
-// ── Profile Dropdown ──────────────────────────────────────────────────────────
-// Now accepts onNavigateProfile callback
 function ProfileDropdown({ isDark, onNavigateProfile }) {
   const [open, setOpen] = useState(false);
   const ref = useRef();
@@ -384,7 +380,7 @@ function ProfileDropdown({ isDark, onNavigateProfile }) {
 
   return (
     <div ref={ref} className="relative">
-      <button onClick={() => setOpen(o => !o)}
+      <button onClick={() => setOpen(o => !o)} style={{ cursor: 'pointer' }}
         className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all group ${isDark ? 'hover:bg-emerald-900/20' : 'hover:bg-slate-100'}`}
       >
         <div className="w-8 h-8 rounded-full bg-linear-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-white text-xs font-bold shadow-sm">A</div>
@@ -399,7 +395,7 @@ function ProfileDropdown({ isDark, onNavigateProfile }) {
           style={{ animation: "modalIn 0.15s ease both" }}
         >
           {[["Profile", "👤"], ["Settings", "⚙️"], ["Logout", "🚪"]].map(([label, emoji]) => (
-            <button key={label} onClick={() => handleItemClick(label)}
+            <button key={label} onClick={() => handleItemClick(label)} style={{ cursor: 'pointer' }}
               className={`w-full flex items-center gap-3 px-4 py-3 text-sm transition-colors text-left ${isDark ? 'text-emerald-50/70 hover:bg-emerald-900/40 hover:text-white' : 'text-slate-700 hover:bg-slate-50'}`}
             >
               <span>{emoji}</span>{label}
@@ -411,7 +407,6 @@ function ProfileDropdown({ isDark, onNavigateProfile }) {
   );
 }
 
-// ── Page title map ────────────────────────────────────────────────────────────
 const PAGE_TITLES = {
   dashboard: { title: "Dashboard", sub: "Overview" },
   careers: { title: "Career Management", sub: "Jobs" },
@@ -421,10 +416,8 @@ const PAGE_TITLES = {
   profile: { title: "My Profile", sub: "Account" },
 };
 
-// ── Main App ──────────────────────────────────────────────────────────────────
 export default function AdminDashboard() {
   const [activeNav, setActiveNav] = useState("dashboard");
-  // "page" drives what's rendered in <main>; can be a nav id OR "profile"
   const [page, setPage] = useState("dashboard");
   const [modal, setModal] = useState(null);
   const [theme, setTheme] = useState("light");
@@ -434,7 +427,6 @@ export default function AdminDashboard() {
 
   const navigateTo = (id) => {
     setPage(id);
-    // Keep sidebar highlight on nav items; profile isn't in sidebar so don't change activeNav
     if (id !== "profile") setActiveNav(id);
   };
 
@@ -453,19 +445,23 @@ export default function AdminDashboard() {
       <aside className={`w-60 shrink-0 flex flex-col h-full border-r transition-colors ${isDark ? 'bg-[#061a14] border-emerald-900/30' : 'bg-slate-900 border-transparent'}`}>
         {/* Logo */}
         <div className={`px-5 py-5 border-b ${isDark ? 'border-emerald-900/30' : 'border-slate-800'}`}>
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center">
-              <BulbIcon isDark={true} />
+          <button onClick={() => navigateTo("dashboard")} style={{ cursor: 'pointer' }}
+            className="flex items-center gap-2.5 w-full hover:opacity-80 transition-opacity"
+          >
+            <div className="w-7 h-7 rounded-lg bg-emerald-500 flex items-center justify-center text-white">
+              <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" className="w-4 h-4">
+                <path d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41m12.72-12.72l1.41-1.41M15 12a3 3 0 11-6 0 3 3 0 016 0z" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
             </div>
             <span className="text-white font-semibold text-sm tracking-tight">AdminPanel</span>
-          </div>
+          </button>
         </div>
 
         {/* Nav */}
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
           <p className="px-3 text-xs font-semibold text-emerald-500/50 uppercase tracking-widest mb-3">Menu</p>
           {NAV_ITEMS.map(({ id, label, icon: Icon }) => (
-            <button key={id} onClick={() => navigateTo(id)}
+            <button key={id} onClick={() => navigateTo(id)} style={{ cursor: 'pointer' }}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${activeNav === id && page !== "profile" ? "bg-emerald-600 text-white shadow-sm shadow-emerald-900/50" : (isDark ? "text-emerald-100/40 hover:text-white hover:bg-emerald-800/20" : "text-slate-400 hover:text-white hover:bg-slate-800")}`}
             >
               <Icon />{label}
@@ -475,20 +471,21 @@ export default function AdminDashboard() {
 
         {/* Sidebar Footer */}
         <div className={`px-3 py-4 border-t ${isDark ? 'border-emerald-900/30' : 'border-slate-800'}`}>
-          <button onClick={toggleTheme}
-            className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl mb-3 transition-all ${isDark ? 'bg-emerald-900/20 border border-emerald-900/30' : 'bg-slate-800 border border-transparent'}`}
+          {/* Theme toggle — shows what you'll switch TO */}
+          <button onClick={toggleTheme} style={{ cursor: 'pointer' }}
+            className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl mb-3 transition-all ${isDark ? 'bg-emerald-900/20 border border-emerald-900/30 text-emerald-300 hover:bg-emerald-900/40' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'}`}
           >
-            <div className="flex items-center gap-2.5">
-              <span className={isDark ? "text-yellow-400" : "text-emerald-500"}>
-                <BulbIcon isDark={isDark} />
-              </span>
-              <span className={`text-xs font-medium ${isDark ? 'text-emerald-100/70' : 'text-slate-400'}`}>
-                {isDark ? "Light Mode" : "Dark Mode"}
-              </span>
-            </div>
-            <div className={`w-7 h-3.5 rounded-full relative transition-colors ${isDark ? 'bg-emerald-500' : 'bg-slate-600'}`}>
-              <div className={`absolute top-0.5 w-2.5 h-2.5 rounded-full bg-white transition-all ${isDark ? 'right-0.5' : 'left-0.5'}`} />
-            </div>
+            {isDark ? (
+              <>
+                <span className="text-yellow-300"><SunIcon /></span>
+                <span className="text-xs font-medium">Light Mode</span>
+              </>
+            ) : (
+              <>
+                <span className="text-slate-400"><MoonIcon /></span>
+                <span className="text-xs font-medium">Dark Mode</span>
+              </>
+            )}
           </button>
 
           <div className="flex items-center gap-2.5 px-2">
@@ -503,29 +500,20 @@ export default function AdminDashboard() {
 
       {/* ── Main ── */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top Nav */}
+        {/* Top Nav — search bar removed */}
         <header className={`h-16 border-b flex items-center justify-between px-6 shrink-0 transition-colors ${isDark ? 'bg-[#0a0f0d] border-emerald-900/30' : 'bg-white border-slate-100'}`}>
           <div>
             <h1 className={`text-sm font-semibold ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>{currentPageMeta.title}</h1>
             <p className="text-[10px] font-bold text-emerald-500 tracking-widest uppercase">{currentPageMeta.sub}</p>
           </div>
-          <div className="flex items-center gap-3">
-            <div className={`hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl border text-xs transition-colors ${isDark ? 'bg-emerald-900/10 border-emerald-900/40 text-emerald-800' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>
-              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35" strokeLinecap="round"/></svg>
-              Search...
-            </div>
-            {/* Pass the navigate callback into ProfileDropdown */}
-            <ProfileDropdown isDark={isDark} onNavigateProfile={() => navigateTo("profile")} />
-          </div>
+          <ProfileDropdown isDark={isDark} onNavigateProfile={() => navigateTo("profile")} />
         </header>
 
         {/* Page Content */}
         <main className="flex-1 overflow-y-auto p-8 lg:p-12">
 
-          {/* ── Profile Page ── */}
           {page === "profile" && <ProfileComponent isDark={isDark} />}
 
-          {/* ── Dashboard Page ── */}
           {page === "dashboard" && (
             <>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
@@ -580,10 +568,9 @@ export default function AdminDashboard() {
             </>
           )}
 
-          {/* ── Other nav pages (placeholder) ── */}
           {["careers", "partners", "products", "settings"].includes(page) && (
             <div className="flex flex-col items-center justify-center h-full gap-4 opacity-40">
-              <div className={`text-6xl`}>🚧</div>
+              <div className="text-6xl">🚧</div>
               <p className={`text-sm font-semibold ${isDark ? 'text-emerald-500' : 'text-slate-500'}`}>{currentPageMeta.title} — coming soon</p>
             </div>
           )}
@@ -591,7 +578,6 @@ export default function AdminDashboard() {
         </main>
       </div>
 
-      {/* ── Modals ── */}
       <AddJobModal open={modal === "job"} onClose={() => setModal(null)} isDark={isDark} />
       <AddPartnerModal open={modal === "partner"} onClose={() => setModal(null)} isDark={isDark} />
       <AddProductModal open={modal === "product"} onClose={() => setModal(null)} isDark={isDark} />
