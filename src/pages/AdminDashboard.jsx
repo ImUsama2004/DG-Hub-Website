@@ -430,6 +430,31 @@ const PAGE_TITLES = {
   profile: { title: "My Profile", sub: "Account" },
 };
 
+// Dummy data for offline/development mode
+const DUMMY_JOBS = [
+  { _id: '1', title: 'Senior React Developer', location: 'Peshawar, Pakistan', experience: '5+ years', workType: 'Full-time', postedDate: '2025-01-15' },
+  { _id: '2', title: 'Full Stack Developer', location: 'Islamabad, Pakistan', experience: '3+ years', workType: 'Full-time', postedDate: '2025-01-14' },
+  { _id: '3', title: 'UI/UX Designer', location: 'Remote', experience: '2+ years', workType: 'Remote', postedDate: '2025-01-13' },
+];
+
+const DUMMY_PARTNERS = [
+  { _id: '1', name: 'Tech Solutions Inc', image: '/placeholder-logo.png', joinedDate: '2025-01-01' },
+  { _id: '2', name: 'Digital Innovations Ltd', image: '/placeholder-logo.png', joinedDate: '2025-01-02' },
+  { _id: '3', name: 'Enterprise Systems Co', image: '/placeholder-logo.png', joinedDate: '2025-01-03' },
+];
+
+const DUMMY_MEMBERS = [
+  { _id: '1', name: 'Usama Saeed', email: 'usama@dgmapper.com', role: 'Admin', joinedDate: '2025-01-01' },
+  { _id: '2', name: 'Ali Khan', email: 'ali@dgmapper.com', role: 'Manager', joinedDate: '2025-01-05' },
+  { _id: '3', name: 'Sara Ahmed', email: 'sara@dgmapper.com', role: 'Editor', joinedDate: '2025-01-10' },
+];
+
+const DUMMY_APPLICATIONS = [
+  { _id: '1', candidateName: 'John Developer', email: 'john@example.com', position: 'Senior React Developer', cvLink: '/cv/john.pdf', appliedDate: '2025-01-10' },
+  { _id: '2', candidateName: 'Emma Designer', email: 'emma@example.com', position: 'UI/UX Designer', cvLink: '/cv/emma.pdf', appliedDate: '2025-01-12' },
+  { _id: '3', candidateName: 'Mike Backend', email: 'mike@example.com', position: 'Full Stack Developer', cvLink: '/cv/mike.pdf', appliedDate: '2025-01-11' },
+];
+
 export default function AdminDashboard() {
   const [activeNav, setActiveNav] = useState("dashboard");
   const [page, setPage] = useState("dashboard");
@@ -471,12 +496,16 @@ export default function AdminDashboard() {
         apiGet('/members'),
         apiGet('/applications'),
       ]);
-      setJobs(Array.isArray(jobsData) ? jobsData : []);
-      setPartners(Array.isArray(partnersData) ? partnersData : []);
-      setMembers(Array.isArray(membersData) ? membersData : []);
-      setApplications(Array.isArray(applicationsData) ? applicationsData : []);
+      setJobs(Array.isArray(jobsData) && jobsData.length > 0 ? jobsData : DUMMY_JOBS);
+      setPartners(Array.isArray(partnersData) && partnersData.length > 0 ? partnersData : DUMMY_PARTNERS);
+      setMembers(Array.isArray(membersData) && membersData.length > 0 ? membersData : DUMMY_MEMBERS);
+      setApplications(Array.isArray(applicationsData) && applicationsData.length > 0 ? applicationsData : DUMMY_APPLICATIONS);
     } catch (err) {
-      setError(err.message || 'Unable to load admin data');
+      setError('Unable to connect to API. Showing sample data for preview.');
+      setJobs(DUMMY_JOBS);
+      setPartners(DUMMY_PARTNERS);
+      setMembers(DUMMY_MEMBERS);
+      setApplications(DUMMY_APPLICATIONS);
     } finally {
       setLoading(false);
     }
@@ -631,7 +660,12 @@ export default function AdminDashboard() {
           {loading ? (
             <div className="rounded-3xl border p-8 text-center text-sm font-semibold text-emerald-500 bg-emerald-950/10">Loading admin data...</div>
           ) : error ? (
-            <div className="rounded-3xl border border-red-500 p-8 text-center text-sm font-semibold text-red-500 bg-red-500/10">{error}</div>
+            <div className="space-y-4">
+              <div className={`rounded-3xl border p-6 text-center text-sm font-semibold ${isDark ? 'bg-yellow-950/20 border-yellow-800 text-yellow-500' : 'bg-yellow-50 border-yellow-200 text-yellow-700'}`}>
+                ⚠️ {error}
+                <p className={`text-xs mt-2 font-normal ${isDark ? 'text-yellow-600' : 'text-yellow-600'}`}>Displaying sample data for demonstration purposes</p>
+              </div>
+            </div>
           ) : (
             <>
               {page === "profile" && <ProfileComponent isDark={isDark} />}
