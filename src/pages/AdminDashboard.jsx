@@ -431,29 +431,29 @@ const PAGE_TITLES = {
 };
 
 // Dummy data for offline/development mode
-const DUMMY_JOBS = [
-  { _id: '1', title: 'Senior React Developer', location: 'Peshawar, Pakistan', experience: '5+ years', workType: 'Full-time', postedDate: '2025-01-15' },
-  { _id: '2', title: 'Full Stack Developer', location: 'Islamabad, Pakistan', experience: '3+ years', workType: 'Full-time', postedDate: '2025-01-14' },
-  { _id: '3', title: 'UI/UX Designer', location: 'Remote', experience: '2+ years', workType: 'Remote', postedDate: '2025-01-13' },
-];
+// const DUMMY_JOBS = [
+//   { _id: '1', title: 'Senior React Developer', location: 'Peshawar, Pakistan', experience: '5+ years', workType: 'Full-time', postedDate: '2025-01-15' },
+//   { _id: '2', title: 'Full Stack Developer', location: 'Islamabad, Pakistan', experience: '3+ years', workType: 'Full-time', postedDate: '2025-01-14' },
+//   { _id: '3', title: 'UI/UX Designer', location: 'Remote', experience: '2+ years', workType: 'Remote', postedDate: '2025-01-13' },
+// ];
 
-const DUMMY_PARTNERS = [
-  { _id: '1', name: 'Tech Solutions Inc', image: '/placeholder-logo.png', joinedDate: '2025-01-01' },
-  { _id: '2', name: 'Digital Innovations Ltd', image: '/placeholder-logo.png', joinedDate: '2025-01-02' },
-  { _id: '3', name: 'Enterprise Systems Co', image: '/placeholder-logo.png', joinedDate: '2025-01-03' },
-];
+// const DUMMY_PARTNERS = [
+//   { _id: '1', name: 'Tech Solutions Inc', image: '/placeholder-logo.png', joinedDate: '2025-01-01' },
+//   { _id: '2', name: 'Digital Innovations Ltd', image: '/placeholder-logo.png', joinedDate: '2025-01-02' },
+//   { _id: '3', name: 'Enterprise Systems Co', image: '/placeholder-logo.png', joinedDate: '2025-01-03' },
+// ];
 
-const DUMMY_MEMBERS = [
-  { _id: '1', name: 'Usama Saeed', email: 'usama@dgmapper.com', role: 'Admin', joinedDate: '2025-01-01' },
-  { _id: '2', name: 'Ali Khan', email: 'ali@dgmapper.com', role: 'Manager', joinedDate: '2025-01-05' },
-  { _id: '3', name: 'Sara Ahmed', email: 'sara@dgmapper.com', role: 'Editor', joinedDate: '2025-01-10' },
-];
+// const DUMMY_MEMBERS = [
+//   { _id: '1', name: 'Usama Saeed', email: 'usama@dgmapper.com', role: 'Admin', joinedDate: '2025-01-01' },
+//   { _id: '2', name: 'Ali Khan', email: 'ali@dgmapper.com', role: 'Manager', joinedDate: '2025-01-05' },
+//   { _id: '3', name: 'Sara Ahmed', email: 'sara@dgmapper.com', role: 'Editor', joinedDate: '2025-01-10' },
+// ];
 
-const DUMMY_APPLICATIONS = [
-  { _id: '1', candidateName: 'John Developer', email: 'john@example.com', position: 'Senior React Developer', cvLink: '/cv/john.pdf', appliedDate: '2025-01-10' },
-  { _id: '2', candidateName: 'Emma Designer', email: 'emma@example.com', position: 'UI/UX Designer', cvLink: '/cv/emma.pdf', appliedDate: '2025-01-12' },
-  { _id: '3', candidateName: 'Mike Backend', email: 'mike@example.com', position: 'Full Stack Developer', cvLink: '/cv/mike.pdf', appliedDate: '2025-01-11' },
-];
+// const DUMMY_APPLICATIONS = [
+//   { _id: '1', candidateName: 'John Developer', email: 'john@example.com', position: 'Senior React Developer', cvLink: '/cv/john.pdf', appliedDate: '2025-01-10' },
+//   { _id: '2', candidateName: 'Emma Designer', email: 'emma@example.com', position: 'UI/UX Designer', cvLink: '/cv/emma.pdf', appliedDate: '2025-01-12' },
+//   { _id: '3', candidateName: 'Mike Backend', email: 'mike@example.com', position: 'Full Stack Developer', cvLink: '/cv/mike.pdf', appliedDate: '2025-01-11' },
+// ];
 
 export default function AdminDashboard() {
   const [activeNav, setActiveNav] = useState("dashboard");
@@ -659,45 +659,45 @@ export default function AdminDashboard() {
         <main className="flex-1 overflow-y-auto p-8 lg:p-12">
           {loading ? (
             <div className="rounded-3xl border p-8 text-center text-sm font-semibold text-emerald-500 bg-emerald-950/10">Loading admin data...</div>
-          ) : error ? (
-            <div className="space-y-4">
-              <div className={`rounded-3xl border p-6 text-center text-sm font-semibold ${isDark ? 'bg-yellow-950/20 border-yellow-800 text-yellow-500' : 'bg-yellow-50 border-yellow-200 text-yellow-700'}`}>
-                ⚠️ {error}
-                <p className={`text-xs mt-2 font-normal ${isDark ? 'text-yellow-600' : 'text-yellow-600'}`}>Displaying sample data for demonstration purposes</p>
-              </div>
-            </div>
           ) : (
-            <>
+            <div className="space-y-4">
+              {error && (
+                <div className={`rounded-3xl border p-6 text-center text-sm font-semibold ${isDark ? 'bg-yellow-950/20 border-yellow-800 text-yellow-500' : 'bg-yellow-50 border-yellow-200 text-yellow-700'}`}>
+                  ⚠️ {error}
+                  <p className={`text-xs mt-2 font-normal ${isDark ? 'text-yellow-600' : 'text-yellow-600'}`}>Displaying sample data for demonstration purposes</p>
+                </div>
+              )}
+
               {page === "profile" && <ProfileComponent isDark={isDark} />}
 
-          {page === 'dashboard' && (
-            <>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
-                {[
-                  { label: 'Active Jobs', value: jobs.length, icon: '💼' },
-                  { label: 'Partner Companies', value: partners.length, icon: '🤝' },
-                  { label: 'Candidate Applications', value: applications.length, icon: '📨' },
-                  { label: 'Team Members', value: members.length, icon: '👥' },
-                ].map(({ label, value, icon }) => (
-                  <div key={label} className={`rounded-3xl border p-6 shadow-sm transition-colors ${isDark ? 'bg-[#111c18] border-emerald-900/30' : 'bg-white border-slate-100'}`}>
-                    <div className="flex justify-between items-start mb-4">
-                      <p className={`text-[10px] font-bold uppercase tracking-widest ${isDark ? 'text-emerald-500/50' : 'text-slate-500'}`}>{label}</p>
-                      <span className="text-lg">{icon}</span>
-                    </div>
-                    <p className="text-4xl font-black text-emerald-500 mb-1">{value}</p>
-                    <p className={`text-xs font-medium ${isDark ? 'text-emerald-900' : 'text-slate-400'}`}>Updated just now</p>
+              {page === 'dashboard' && (
+                <>
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
+                    {[
+                      { label: 'Active Jobs', value: jobs.length, icon: '💼' },
+                      { label: 'Partner Companies', value: partners.length, icon: '🤝' },
+                      { label: 'Candidate Applications', value: applications.length, icon: '📨' },
+                      { label: 'Team Members', value: members.length, icon: '👥' },
+                    ].map(({ label, value, icon }) => (
+                      <div key={label} className={`rounded-3xl border p-6 shadow-sm transition-colors ${isDark ? 'bg-[#111c18] border-emerald-900/30' : 'bg-white border-slate-100'}`}>
+                        <div className="flex justify-between items-start mb-4">
+                          <p className={`text-[10px] font-bold uppercase tracking-widest ${isDark ? 'text-emerald-500/50' : 'text-slate-500'}`}>{label}</p>
+                          <span className="text-lg">{icon}</span>
+                        </div>
+                        <p className="text-4xl font-black text-emerald-500 mb-1">{value}</p>
+                        <p className={`text-xs font-medium ${isDark ? 'text-emerald-900' : 'text-slate-400'}`}>Updated just now</p>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
 
-              <div className="mb-6">
-                <h2 className={`text-xl font-bold tracking-tight ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>Quick Actions</h2>
-                <p className={`text-sm mt-0.5 ${isDark ? 'text-emerald-500/60' : 'text-slate-400'}`}>Manage your backend resources directly from the dashboard.</p>
-              </div>
+                  <div className="mb-6">
+                    <h2 className={`text-xl font-bold tracking-tight ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>Quick Actions</h2>
+                    <p className={`text-sm mt-0.5 ${isDark ? 'text-emerald-500/60' : 'text-slate-400'}`}>Manage your backend resources directly from the dashboard.</p>
+                  </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl">
-                <ActionCard isDark={isDark} icon={<PlusJobIcon />} title="Add Job" desc="Post a new job opportunity to your careers page." accent="bg-emerald-500/5" onClick={() => setModal('job')} />
-                <ActionCard isDark={isDark} icon={<PartnerIcon />} title="Add Partner Company" desc="Showcase a new partner on your website." accent="bg-emerald-500/5" onClick={() => setModal('partner')} />
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl">
+                    <ActionCard isDark={isDark} icon={<PlusJobIcon />} title="Add Job" desc="Post a new job opportunity to your careers page." accent="bg-emerald-500/5" onClick={() => setModal('job')} />
+                    <ActionCard isDark={isDark} icon={<PartnerIcon />} title="Add Partner Company" desc="Showcase a new partner on your website." accent="bg-emerald-500/5" onClick={() => setModal('partner')} />
                 <ActionCard isDark={isDark} icon={<ProductIcon />} title="Add New Product" desc="Manage product listings for your website." accent="bg-emerald-500/5" onClick={() => setModal('product')} />
               </div>
 
@@ -905,7 +905,7 @@ export default function AdminDashboard() {
               </div>
             </div>
           )}
-            </>
+            </div>
           )}
         </main>
       </div>

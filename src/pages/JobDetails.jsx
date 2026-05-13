@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Header from "../components/jobdetails/Header";
-import { div } from "framer-motion/client";
 
 function JobDetails() {
   const { id } = useParams();
