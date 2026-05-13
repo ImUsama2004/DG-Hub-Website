@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import { apiGet, apiPost, apiPut, apiDelete } from "../api/api";
 
 // ── Profile Component (inline) ────────────────────────────────────────────────
 const Field = ({ label, children, isDark }) => (
@@ -94,6 +95,7 @@ const NAV_ITEMS = [
   { id: "dashboard", label: "Dashboard", icon: SquaresIcon },
   { id: "careers", label: "Career Management", icon: BriefcaseIcon },
   { id: "partners", label: "Partner Companies", icon: BuildingIcon },
+  { id: "applications", label: "Applications", icon: ApplicationIcon },
   { id: "products", label: "Products", icon: CubeIcon },
   { id: "settings", label: "Settings", icon: GearIcon },
 ];
@@ -183,6 +185,14 @@ function ProductIcon() {
     </svg>
   );
 }
+function ApplicationIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" className="w-4 h-4">
+      <path d="M4 7h16M4 11h16M10 15h6M8 19h8" />
+      <rect x="3" y="3" width="18" height="18" rx="3" />
+    </svg>
+  );
+}
 function ChevronDown() {
   return (
     <svg viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5">
@@ -245,11 +255,11 @@ function ModalField({ label, children, isDark }) {
   );
 }
 
-function AddJobModal({ open, onClose, isDark }) {
-  const [form, setForm] = useState({ title: "", exp: "", location: "", workType: "onsite" });
+function AddJobModal({ open, onClose, isDark, onSubmit }) {
+  const [form, setForm] = useState({ title: "", exp: "", location: "", workType: "onsite", description: "" });
   const set = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }));
   const inputCls = `w-full px-3.5 py-2.5 text-sm rounded-xl border focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all ${isDark ? 'bg-[#0a0f0d] border-emerald-900 text-emerald-50 placeholder-emerald-800' : 'bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400'}`;
-  const handleSubmit = () => { alert(`Job "${form.title}" added!`); onClose(); setForm({ title: "", exp: "", location: "", workType: "onsite" }); };
+  const handleSubmit = () => { onSubmit({ title: form.title, exp: form.exp, location: form.location, workType: form.workType, description: form.description }); onClose(); setForm({ title: "", exp: "", location: "", workType: "onsite", description: "" }); };
   return (
     <Modal open={open} onClose={onClose} title="Post a New Job" onSubmit={handleSubmit} submitLabel="Add Job" isDark={isDark}>
       <ModalField label="Job Title" isDark={isDark}>
@@ -274,22 +284,25 @@ function AddJobModal({ open, onClose, isDark }) {
           ))}
         </div>
       </ModalField>
+      <ModalField label="Description" isDark={isDark}>
+        <textarea className={`${inputCls} resize-none`} rows={3} placeholder="Describe the role..." value={form.description} onChange={set("description")} />
+      </ModalField>
     </Modal>
   );
 }
 
-function AddPartnerModal({ open, onClose, isDark }) {
-  const [form, setForm] = useState({ name: "", file: null });
-  const [preview, setPreview] = useState(null);
+function AddPartnerModal({ open, onClose, isDark, onSubmit, initialData, title = "Add Partner Company", submitLabel = "Save Company" }) {
+  const [form, setForm] = useState({ name: initialData?.name || "", file: null });
+  const [preview, setPreview] = useState(initialData?.image || initialData?.logo || null);
   const fileRef = useRef();
   const inputCls = `w-full px-3.5 py-2.5 text-sm rounded-xl border focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all ${isDark ? 'bg-[#0a0f0d] border-emerald-900 text-emerald-50 placeholder-emerald-800' : 'bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400'}`;
   const handleFile = (e) => {
     const f = e.target.files[0];
     if (f) { setForm(p => ({ ...p, file: f })); setPreview(URL.createObjectURL(f)); }
   };
-  const handleSubmit = () => { alert(`Company "${form.name}" saved!`); onClose(); setForm({ name: "", file: null }); setPreview(null); };
+  const handleSubmit = () => { onSubmit({ name: form.name, file: form.file }); onClose(); setForm({ name: "", file: null }); setPreview(null); };
   return (
-    <Modal open={open} onClose={onClose} title="Add Partner Company" onSubmit={handleSubmit} submitLabel="Save Company" isDark={isDark}>
+    <Modal open={open} onClose={onClose} title={title} onSubmit={handleSubmit} submitLabel={submitLabel} isDark={isDark}>
       <ModalField label="Company Name" isDark={isDark}>
         <input className={inputCls} placeholder="e.g. Acme Corporation" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
       </ModalField>
@@ -316,11 +329,11 @@ function AddPartnerModal({ open, onClose, isDark }) {
   );
 }
 
-function AddProductModal({ open, onClose, isDark }) {
+function AddProductModal({ open, onClose, isDark, onSubmit }) {
   const [form, setForm] = useState({ name: "", desc: "", tags: [] });
   const toggleTag = (tag) => setForm(f => ({ ...f, tags: f.tags.includes(tag) ? f.tags.filter(t => t !== tag) : [...f.tags, tag] }));
   const inputCls = `w-full px-3.5 py-2.5 text-sm rounded-xl border focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all ${isDark ? 'bg-[#0a0f0d] border-emerald-900 text-emerald-50 placeholder-emerald-800' : 'bg-slate-50 border-slate-200 text-slate-800 placeholder-slate-400'}`;
-  const handleSubmit = () => { alert(`Product "${form.name}" added!`); onClose(); setForm({ name: "", desc: "", tags: [] }); };
+  const handleSubmit = () => { onSubmit({ name: form.name, desc: form.desc, tags: form.tags }); onClose(); setForm({ name: "", desc: "", tags: [] }); };
   return (
     <Modal open={open} onClose={onClose} title="Add New Product" onSubmit={handleSubmit} submitLabel="Add Product" isDark={isDark}>
       <ModalField label="Product Name" isDark={isDark}>
@@ -411,6 +424,7 @@ const PAGE_TITLES = {
   dashboard: { title: "Dashboard", sub: "Overview" },
   careers: { title: "Career Management", sub: "Jobs" },
   partners: { title: "Partner Companies", sub: "Partners" },
+  applications: { title: "Applications", sub: "Candidates" },
   products: { title: "Products", sub: "Catalogue" },
   settings: { title: "Settings", sub: "Preferences" },
   profile: { title: "My Profile", sub: "Account" },
@@ -421,13 +435,116 @@ export default function AdminDashboard() {
   const [page, setPage] = useState("dashboard");
   const [modal, setModal] = useState(null);
   const [theme, setTheme] = useState("light");
+  const [jobs, setJobs] = useState([]);
+  const [partners, setPartners] = useState([]);
+  const [applications, setApplications] = useState([]);
+  const [members, setMembers] = useState([]);
+  const [products, setProducts] = useState([
+    { id: 1, name: 'Analytics Platform', desc: 'Customer analytics and reporting dashboard', tags: ['React', 'Node.js', 'PostgreSQL'] },
+    { id: 2, name: 'Partner Portal', desc: 'Partner onboarding and collaboration hub', tags: ['Next.js', 'GraphQL', 'Tailwind CSS'] },
+  ]);
+  const [selectedPartner, setSelectedPartner] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const isDark = theme === "dark";
+  const SERVER_URL = 'http://localhost:3000';
   const toggleTheme = () => setTheme(prev => prev === "light" ? "dark" : "light");
 
   const navigateTo = (id) => {
     setPage(id);
     if (id !== "profile") setActiveNav(id);
+  };
+
+  const getImageUrl = (src) => {
+    if (!src) return '';
+    return src.startsWith('http') ? src : `${SERVER_URL}${src}`;
+  };
+
+  const loadAdminData = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const [jobsData, partnersData, membersData, applicationsData] = await Promise.all([
+        apiGet('/jobs'),
+        apiGet('/partners'),
+        apiGet('/members'),
+        apiGet('/applications'),
+      ]);
+      setJobs(Array.isArray(jobsData) ? jobsData : []);
+      setPartners(Array.isArray(partnersData) ? partnersData : []);
+      setMembers(Array.isArray(membersData) ? membersData : []);
+      setApplications(Array.isArray(applicationsData) ? applicationsData : []);
+    } catch (err) {
+      setError(err.message || 'Unable to load admin data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadAdminData();
+  }, []);
+
+  const refreshData = async () => {
+    await loadAdminData();
+  };
+
+  const handleCreateJob = async (job) => {
+    await apiPost('/jobs', job);
+    setModal(null);
+    await refreshData();
+  };
+
+  const handleDeleteJob = async (id) => {
+    if (!window.confirm('Remove this job?')) return;
+    await apiDelete(`/jobs/${id}`);
+    await refreshData();
+  };
+
+  const handleCreatePartner = async (partner) => {
+    const formData = new FormData();
+    formData.append('name', partner.name);
+    if (partner.file) formData.append('image', partner.file);
+    await apiPost('/partners', formData);
+    setModal(null);
+    await refreshData();
+  };
+
+  const handleEditPartner = (partner) => {
+    setSelectedPartner(partner);
+    setModal('partnerEdit');
+  };
+
+  const handleUpdatePartner = async (partner) => {
+    if (!selectedPartner) return;
+    const formData = new FormData();
+    formData.append('name', partner.name);
+    if (partner.file) formData.append('image', partner.file);
+    await apiPut(`/partners/${selectedPartner._id || selectedPartner.id}`, formData);
+    setModal(null);
+    setSelectedPartner(null);
+    await refreshData();
+  };
+
+  const handleDeletePartner = async (id) => {
+    if (!window.confirm('Remove this partner company?')) return;
+    await apiDelete(`/partners/${id}`);
+    await refreshData();
+  };
+
+  const handleAddProduct = (product) => {
+    setProducts(prev => [...prev, { ...product, id: Date.now() }]);
+    setModal(null);
+  };
+
+  const handleDeleteProduct = (id) => {
+    setProducts(prev => prev.filter(product => product.id !== id));
+  };
+
+  const handleSendContact = async (contact) => {
+    await apiPost('/contact/send', contact);
+    alert('Contact message sent successfully');
   };
 
   const currentPageMeta = PAGE_TITLES[page] || PAGE_TITLES.dashboard;
@@ -511,76 +628,294 @@ export default function AdminDashboard() {
 
         {/* Page Content */}
         <main className="flex-1 overflow-y-auto p-8 lg:p-12">
-
-          {page === "profile" && <ProfileComponent isDark={isDark} />}
-
-          {page === "dashboard" && (
+          {loading ? (
+            <div className="rounded-3xl border p-8 text-center text-sm font-semibold text-emerald-500 bg-emerald-950/10">Loading admin data...</div>
+          ) : error ? (
+            <div className="rounded-3xl border border-red-500 p-8 text-center text-sm font-semibold text-red-500 bg-red-500/10">{error}</div>
+          ) : (
             <>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+              {page === "profile" && <ProfileComponent isDark={isDark} />}
+
+          {page === 'dashboard' && (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-12">
                 {[
-                  { label: "Active Jobs", value: "12", change: "+3 this month", color: "text-emerald-500", icon: "💼" },
-                  { label: "Partner Companies", value: "8", change: "+1 this week", color: "text-emerald-500", icon: "🤝" },
-                  { label: "Products Listed", value: "5", change: "2 in review", color: "text-emerald-500", icon: "📦" },
-                ].map(({ label, value, change, color, icon }) => (
+                  { label: 'Active Jobs', value: jobs.length, icon: '💼' },
+                  { label: 'Partner Companies', value: partners.length, icon: '🤝' },
+                  { label: 'Candidate Applications', value: applications.length, icon: '📨' },
+                  { label: 'Team Members', value: members.length, icon: '👥' },
+                ].map(({ label, value, icon }) => (
                   <div key={label} className={`rounded-3xl border p-6 shadow-sm transition-colors ${isDark ? 'bg-[#111c18] border-emerald-900/30' : 'bg-white border-slate-100'}`}>
                     <div className="flex justify-between items-start mb-4">
                       <p className={`text-[10px] font-bold uppercase tracking-widest ${isDark ? 'text-emerald-500/50' : 'text-slate-500'}`}>{label}</p>
                       <span className="text-lg">{icon}</span>
                     </div>
-                    <p className={`text-4xl font-black ${color} mb-1`}>{value}</p>
-                    <p className={`text-xs font-medium ${isDark ? 'text-emerald-900' : 'text-slate-400'}`}>{change}</p>
+                    <p className="text-4xl font-black text-emerald-500 mb-1">{value}</p>
+                    <p className={`text-xs font-medium ${isDark ? 'text-emerald-900' : 'text-slate-400'}`}>Updated just now</p>
                   </div>
                 ))}
               </div>
 
               <div className="mb-6">
                 <h2 className={`text-xl font-bold tracking-tight ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>Quick Actions</h2>
-                <p className={`text-sm mt-0.5 ${isDark ? 'text-emerald-500/60' : 'text-slate-400'}`}>Manage your website content from here</p>
+                <p className={`text-sm mt-0.5 ${isDark ? 'text-emerald-500/60' : 'text-slate-400'}`}>Manage your backend resources directly from the dashboard.</p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl">
-                <ActionCard isDark={isDark} icon={<PlusJobIcon />} title="Add Job" desc="Post a new job opportunity to your careers page." accent="bg-emerald-500/5" onClick={() => setModal("job")} />
-                <ActionCard isDark={isDark} icon={<PartnerIcon />} title="Add Partner Company" desc="Showcase a new partner on your website." accent="bg-emerald-500/5" onClick={() => setModal("partner")} />
-                <ActionCard isDark={isDark} icon={<ProductIcon />} title="Add New Product" desc="List a new product with its tech stack and details." accent="bg-emerald-500/5" onClick={() => setModal("product")} />
+                <ActionCard isDark={isDark} icon={<PlusJobIcon />} title="Add Job" desc="Post a new job opportunity to your careers page." accent="bg-emerald-500/5" onClick={() => setModal('job')} />
+                <ActionCard isDark={isDark} icon={<PartnerIcon />} title="Add Partner Company" desc="Showcase a new partner on your website." accent="bg-emerald-500/5" onClick={() => setModal('partner')} />
+                <ActionCard isDark={isDark} icon={<ProductIcon />} title="Add New Product" desc="Manage product listings for your website." accent="bg-emerald-500/5" onClick={() => setModal('product')} />
               </div>
 
-              <div className="mt-12 max-w-4xl">
-                <h2 className={`text-sm font-bold mb-4 ${isDark ? 'text-emerald-500/80' : 'text-slate-700'}`}>Recent Activity</h2>
-                <div className={`rounded-2xl border shadow-sm divide-y ${isDark ? 'bg-[#111c18] border-emerald-900/30 divide-emerald-900/20' : 'bg-white border-slate-100 divide-slate-50'}`}>
-                  {[
-                    { action: "New job posted", detail: "Senior Designer · Remote", time: "2h ago", dot: "bg-emerald-500" },
-                    { action: "Partner added", detail: "TechCorp Inc.", time: "1d ago", dot: "bg-emerald-400" },
-                    { action: "Product updated", detail: "Analytics Platform v2.0", time: "3d ago", dot: "bg-emerald-300" },
-                  ].map(({ action, detail, time, dot }) => (
-                    <div key={detail} className="flex items-center justify-between px-6 py-4">
-                      <div className="flex items-center gap-4">
-                        <span className={`w-2 h-2 rounded-full ${dot} shadow-sm`} />
-                        <div>
-                          <p className={`text-sm font-semibold ${isDark ? 'text-emerald-50/90' : 'text-slate-700'}`}>{action}</p>
-                          <p className={`text-xs ${isDark ? 'text-emerald-500/40' : 'text-slate-400'}`}>{detail}</p>
+              <div className="mt-12 grid gap-6 lg:grid-cols-2">
+                <div className={`rounded-3xl border p-6 ${isDark ? 'bg-[#111c18] border-emerald-900/30' : 'bg-white border-slate-100'}`}>
+                  <h3 className={`text-lg font-semibold ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>Recent Jobs</h3>
+                  <p className={`text-sm text-slate-500 ${isDark ? 'text-emerald-500/60' : ''}`}>Latest job requests from your backend.</p>
+                  <div className="mt-6 space-y-4">
+                    {jobs.slice(0, 3).map(job => (
+                      <div key={job._id || job.id} className={`rounded-3xl border p-4 ${isDark ? 'border-emerald-900/30' : 'border-slate-100'}`}>
+                        <div className="flex items-center justify-between gap-4">
+                          <div>
+                            <p className={`font-semibold ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>{job.title || 'Untitled Role'}</p>
+                            <p className="text-xs text-slate-500">{job.location || 'Remote'} · {job.workType || 'Onsite'}</p>
+                          </div>
+                          <span className={`text-xs font-semibold ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>{job.exp ? `${job.exp} yrs` : 'N/A'}</span>
                         </div>
                       </div>
-                      <span className={`text-[10px] font-bold ${isDark ? 'text-emerald-900' : 'text-slate-400'}`}>{time}</span>
-                    </div>
-                  ))}
+                    ))}
+                    {jobs.length === 0 && <p className={`text-sm ${isDark ? 'text-emerald-500/70' : 'text-slate-500'}`}>No job postings available yet.</p>}
+                  </div>
+                </div>
+                <div className={`rounded-3xl border p-6 ${isDark ? 'bg-[#111c18] border-emerald-900/30' : 'bg-white border-slate-100'}`}>
+                  <h3 className={`text-lg font-semibold ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>Latest Applications</h3>
+                  <p className={`text-sm ${isDark ? 'text-emerald-500/60' : 'text-slate-500'}`}>View the newest candidates from your applications endpoint.</p>
+                  <div className="mt-6 space-y-4">
+                    {applications.slice(0, 3).map(application => (
+                      <div key={application._id || application.id} className={`rounded-3xl border p-4 ${isDark ? 'border-emerald-900/30' : 'border-slate-100'}`}>
+                        <div className="flex items-center justify-between gap-4">
+                          <div>
+                            <p className={`font-semibold ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>{application.name || application.fullname || application.email || 'Candidate'}</p>
+                            <p className="text-xs text-slate-500">{application.position || application.role || 'Applied role unavailable'}</p>
+                          </div>
+                          <span className={`text-xs font-semibold ${isDark ? 'text-emerald-400' : 'text-emerald-600'}`}>{application.email || 'No email'}</span>
+                        </div>
+                      </div>
+                    ))}
+                    {applications.length === 0 && <p className={`text-sm ${isDark ? 'text-emerald-500/70' : 'text-slate-500'}`}>No applications have been submitted yet.</p>}
+                  </div>
                 </div>
               </div>
             </>
           )}
 
-          {["careers", "partners", "products", "settings"].includes(page) && (
-            <div className="flex flex-col items-center justify-center h-full gap-4 opacity-40">
-              <div className="text-6xl">🚧</div>
-              <p className={`text-sm font-semibold ${isDark ? 'text-emerald-500' : 'text-slate-500'}`}>{currentPageMeta.title} — coming soon</p>
+          {page === 'careers' && (
+            <div className="space-y-6">
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <h2 className={`text-2xl font-semibold ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>Job Postings</h2>
+                  <p className={`text-sm ${isDark ? 'text-emerald-500/70' : 'text-slate-500'}`}>Manage all roles and openings from your backend.</p>
+                </div>
+                <button style={{ cursor: 'pointer' }} onClick={() => setModal('job')} className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition-all">
+                  Add Job
+                </button>
+              </div>
+              <div className={`rounded-3xl border ${isDark ? 'bg-[#111c18] border-emerald-900/30' : 'bg-white border-slate-100'}`}>
+                <table className="min-w-full border-collapse text-sm">
+                  <thead>
+                    <tr className={`text-left ${isDark ? 'text-emerald-400/80' : 'text-slate-500'}`}>
+                      <th className="px-6 py-4">Title</th>
+                      <th className="px-6 py-4">Location</th>
+                      <th className="px-6 py-4">Experience</th>
+                      <th className="px-6 py-4">Type</th>
+                      <th className="px-6 py-4">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {jobs.map(job => (
+                      <tr key={job._id || job.id} className={`${isDark ? 'border-emerald-900/20' : 'border-slate-100'} border-t`}>
+                        <td className="px-6 py-4 font-semibold text-slate-900">{job.title}</td>
+                        <td className="px-6 py-4 text-slate-500">{job.location || 'Remote'}</td>
+                        <td className="px-6 py-4 text-slate-500">{job.exp || 'N/A'}</td>
+                        <td className="px-6 py-4 text-slate-500">{job.workType || 'Hybrid'}</td>
+                        <td className="px-6 py-4 space-x-2">
+                          <button style={{ cursor: 'pointer' }} onClick={() => handleDeleteJob(job._id || job.id)} className="px-3 py-2 rounded-xl bg-red-500 text-white text-xs font-semibold hover:bg-red-600 transition-all">Delete</button>
+                        </td>
+                      </tr>
+                    ))}
+                    {jobs.length === 0 && (
+                      <tr>
+                        <td colSpan="5" className="px-6 py-10 text-center text-slate-500">No jobs available yet. Add the first job posting.</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
 
+          {page === 'partners' && (
+            <div className="space-y-6">
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <h2 className={`text-2xl font-semibold ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>Partner Companies</h2>
+                  <p className={`text-sm ${isDark ? 'text-emerald-500/70' : 'text-slate-500'}`}>Manage partner logos and company records.</p>
+                </div>
+                <button style={{ cursor: 'pointer' }} onClick={() => setModal('partner')} className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition-all">
+                  Add Partner
+                </button>
+              </div>
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
+                {partners.map(partner => (
+                  <div key={partner._id || partner.id} className={`rounded-3xl border p-5 ${isDark ? 'bg-[#111c18] border-emerald-900/30' : 'bg-white border-slate-100'}`}>
+                    <div className="flex items-center gap-4 mb-4">
+                      <div className="h-16 w-16 rounded-3xl bg-slate-100 flex items-center justify-center overflow-hidden">
+                        {partner.image || partner.logo ? <img src={getImageUrl(partner.image || partner.logo)} alt={partner.name} className="h-full object-contain" /> : <span className="text-xs text-slate-400">No logo</span>}
+                      </div>
+                      <div>
+                        <h3 className={`font-semibold ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>{partner.name}</h3>
+                        <p className="text-xs text-slate-500">ID: {partner._id || partner.id}</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      <button style={{ cursor: 'pointer' }} onClick={() => handleEditPartner(partner)} className="px-4 py-2 rounded-xl bg-slate-800 text-white text-xs font-semibold hover:bg-slate-900 transition-all">Edit</button>
+                      <button style={{ cursor: 'pointer' }} onClick={() => handleDeletePartner(partner._id || partner.id)} className="px-4 py-2 rounded-xl bg-red-500 text-white text-xs font-semibold hover:bg-red-600 transition-all">Delete</button>
+                    </div>
+                  </div>
+                ))}
+                {partners.length === 0 && <div className={`rounded-3xl border p-10 text-center ${isDark ? 'bg-[#111c18] border-emerald-900/30 text-emerald-500' : 'bg-white border-slate-100 text-slate-500'}`}>No partner companies found.</div>}
+              </div>
+            </div>
+          )}
+
+          {page === 'applications' && (
+            <div className="space-y-6">
+              <div>
+                <h2 className={`text-2xl font-semibold ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>Candidate Applications</h2>
+                <p className={`text-sm ${isDark ? 'text-emerald-500/70' : 'text-slate-500'}`}>Review submissions and manage candidate records.</p>
+              </div>
+              <div className={`rounded-3xl border ${isDark ? 'bg-[#111c18] border-emerald-900/30' : 'bg-white border-slate-100'}`}>
+                <table className="min-w-full border-collapse text-sm">
+                  <thead>
+                    <tr className={`text-left ${isDark ? 'text-emerald-400/80' : 'text-slate-500'}`}>
+                      <th className="px-6 py-4">Candidate</th>
+                      <th className="px-6 py-4">Email</th>
+                      <th className="px-6 py-4">Position</th>
+                      <th className="px-6 py-4">CV</th>
+                      <th className="px-6 py-4">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {applications.map(item => (
+                      <tr key={item._id || item.id} className={`${isDark ? 'border-emerald-900/20' : 'border-slate-100'} border-t`}>
+                        <td className="px-6 py-4 font-semibold text-slate-900">{item.name || item.fullname || 'Candidate'}</td>
+                        <td className="px-6 py-4 text-slate-500">{item.email || 'No email'}</td>
+                        <td className="px-6 py-4 text-slate-500">{item.position || item.role || 'N/A'}</td>
+                        <td className="px-6 py-4 text-slate-500">
+                          {item.cvUrl || item.cv?.url ? (
+                            <a href={item.cvUrl || getImageUrl(item.cv?.url)} target="_blank" rel="noreferrer" className="text-emerald-600 hover:underline">View CV</a>
+                          ) : 'No CV'}
+                        </td>
+                        <td className="px-6 py-4 space-x-2">
+                          <button style={{ cursor: 'pointer' }} onClick={() => item._id && apiDelete(`/applications/${item._id}`).then(refreshData)} className="px-3 py-2 rounded-xl bg-red-500 text-white text-xs font-semibold hover:bg-red-600 transition-all">Delete</button>
+                        </td>
+                      </tr>
+                    ))}
+                    {applications.length === 0 && (
+                      <tr>
+                        <td colSpan="5" className="px-6 py-10 text-center text-slate-500">No candidate applications are available yet.</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {page === 'products' && (
+            <div className="space-y-6">
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <h2 className={`text-2xl font-semibold ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>Products</h2>
+                  <p className={`text-sm ${isDark ? 'text-emerald-500/70' : 'text-slate-500'}`}>A lightweight product catalog for your website.</p>
+                </div>
+                <button style={{ cursor: 'pointer' }} onClick={() => setModal('product')} className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-700 transition-all">Add Product</button>
+              </div>
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                {products.map(product => (
+                  <div key={product.id} className={`rounded-3xl border p-6 ${isDark ? 'bg-[#111c18] border-emerald-900/30' : 'bg-white border-slate-100'}`}>
+                    <div className="flex items-center justify-between gap-3 mb-4">
+                      <div>
+                        <h3 className={`text-lg font-semibold ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>{product.name}</h3>
+                        <p className={`text-sm ${isDark ? 'text-emerald-500/70' : 'text-slate-500'}`}>{product.desc}</p>
+                      </div>
+                      <button style={{ cursor: 'pointer' }} onClick={() => handleDeleteProduct(product.id)} className="text-xs font-semibold text-red-500 hover:text-red-600">Delete</button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {product.tags.map(tag => (<span key={tag} className="rounded-full bg-emerald-600/10 px-3 py-1 text-xs text-emerald-600">{tag}</span>))}
+                    </div>
+                  </div>
+                ))}
+                {products.length === 0 && <div className={`rounded-3xl border p-10 ${isDark ? 'bg-[#111c18] border-emerald-900/30 text-emerald-500' : 'bg-white border-slate-100 text-slate-500'}`}>No products added yet.</div>}
+              </div>
+            </div>
+          )}
+
+          {page === 'settings' && (
+            <div className="space-y-6 max-w-3xl">
+              <div>
+                <h2 className={`text-2xl font-semibold ${isDark ? 'text-emerald-50' : 'text-slate-800'}`}>Contact & Settings</h2>
+                <p className={`text-sm ${isDark ? 'text-emerald-500/70' : 'text-slate-500'}`}>Send a test message through the contact route.</p>
+              </div>
+              <div className={`rounded-3xl border p-8 ${isDark ? 'bg-[#111c18] border-emerald-900/30' : 'bg-white border-slate-100'}`}>
+                <ContactForm isDark={isDark} onSubmit={handleSendContact} />
+              </div>
+            </div>
+          )}
+            </>
+          )}
         </main>
       </div>
 
-      <AddJobModal open={modal === "job"} onClose={() => setModal(null)} isDark={isDark} />
-      <AddPartnerModal open={modal === "partner"} onClose={() => setModal(null)} isDark={isDark} />
-      <AddProductModal open={modal === "product"} onClose={() => setModal(null)} isDark={isDark} />
+      <AddJobModal open={modal === 'job'} onClose={() => setModal(null)} isDark={isDark} onSubmit={handleCreateJob} />
+      <AddPartnerModal open={modal === 'partner'} onClose={() => setModal(null)} isDark={isDark} onSubmit={handleCreatePartner} />
+      <AddPartnerModal open={modal === 'partnerEdit'} onClose={() => { setSelectedPartner(null); setModal(null); }} isDark={isDark} onSubmit={handleUpdatePartner} initialData={selectedPartner} title="Update Partner Company" submitLabel="Update Company" />
+      <AddProductModal open={modal === 'product'} onClose={() => setModal(null)} isDark={isDark} onSubmit={handleAddProduct} />
     </div>
+  );
+}
+
+function ContactForm({ isDark, onSubmit }) {
+  const [form, setForm] = useState({ name: '', email: '', message: '' });
+  const [status, setStatus] = useState('idle');
+
+  const handleChange = (key) => (e) => setForm(f => ({ ...f, [key]: e.target.value }));
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('submitting');
+    try {
+      await onSubmit(form);
+      setStatus('success');
+      setForm({ name: '', email: '', message: '' });
+      setTimeout(() => setStatus('idle'), 2000);
+    } catch {
+      setStatus('error');
+      setTimeout(() => setStatus('idle'), 2000);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-5">
+      <div className="grid gap-4 md:grid-cols-2">
+        <input className={`w-full px-4 py-3 rounded-2xl border ${isDark ? 'bg-[#0a0f0d] border-emerald-900 text-emerald-50' : 'bg-slate-50 border-slate-200 text-slate-900'}`} placeholder="Name" value={form.name} onChange={handleChange('name')} required />
+        <input className={`w-full px-4 py-3 rounded-2xl border ${isDark ? 'bg-[#0a0f0d] border-emerald-900 text-emerald-50' : 'bg-slate-50 border-slate-200 text-slate-900'}`} type="email" placeholder="Email" value={form.email} onChange={handleChange('email')} required />
+      </div>
+      <textarea rows={5} className={`w-full px-4 py-3 rounded-2xl border ${isDark ? 'bg-[#0a0f0d] border-emerald-900 text-emerald-50' : 'bg-slate-50 border-slate-200 text-slate-900'}`} placeholder="Message" value={form.message} onChange={handleChange('message')} required />
+      <div className="flex items-center justify-between gap-4">
+        <button type="submit" style={{ cursor: 'pointer' }} disabled={status === 'submitting'} className="px-6 py-3 rounded-2xl bg-emerald-600 text-white font-semibold hover:bg-emerald-700 disabled:opacity-50 transition-all">{status === 'submitting' ? 'Sending...' : 'Send Message'}</button>
+        <span className={`text-sm font-medium ${status === 'success' ? 'text-emerald-400' : status === 'error' ? 'text-red-400' : 'text-slate-500'}`}>
+          {status === 'success' ? '✓ Message sent!' : status === 'error' ? '✗ Send failed' : 'Ready to send'}
+        </span>
+      </div>
+    </form>
   );
 }
