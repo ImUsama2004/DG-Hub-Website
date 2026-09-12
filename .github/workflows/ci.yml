@@ -1,3 +1,4 @@
+```yaml
 name: DG-Hub CI
 
 on:
@@ -36,3 +37,12 @@ jobs:
 
       - name: Push Docker image
         run: docker push muhammadusamasaeed/dg-hub:latest
+
+  deploy-test:
+    needs: build-and-push
+    runs-on: self-hosted
+
+    steps:
+      - name: Check Kubernetes
+        run: kubectl get nodes
+```
