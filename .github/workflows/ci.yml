@@ -32,10 +32,10 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build Docker image
-        run: docker build -t muhammadusamasaeed/dg-hub:latest .
+        run: docker build -t muhammadusamasaeed/dg-hub:${{ github.sha }} .
 
       - name: Push Docker image
-        run: docker push muhammadusamasaeed/dg-hub:latest
+        run: docker push muhammadusamasaeed/dg-hub:${{ github.sha }}
 
   deploy-test:
     needs: build-and-push
