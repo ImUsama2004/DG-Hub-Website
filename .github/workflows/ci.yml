@@ -37,10 +37,17 @@ jobs:
       - name: Push Docker image
         run: docker push muhammadusamasaeed/dg-hub:${{ github.sha }}
 
-  deploy-test:
+  deploy:
     needs: build-and-push
     runs-on: self-hosted
 
     steps:
       - name: Check Kubernetes
         run: kubectl get nodes
+
+      - name: Deploy new image
+        run: kubectl set image deployment/dg-hub dg-hub=muhammadusamasaeed/dg-hub:${{ github.sha }}
+
+      - name: Wait for rollout
+        run: kubectl rollout status deployment/dg-hub
+
