@@ -1,4 +1,3 @@
-```yaml
 name: DG-Hub CI
 
 on:
@@ -45,4 +44,3 @@ jobs:
     steps:
       - name: Check Kubernetes
         run: kubectl get nodes
-```
