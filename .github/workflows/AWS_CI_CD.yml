@@ -53,14 +53,14 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
 
-          mkdir -p ~/.ssh
+          mkdir -p "$HOME/.ssh"
 
-          echo "$EC2_SSH_KEY" > ~/.ssh/project.pem
-          chmod 600 ~/.ssh/project.pem
+          echo "$EC2_SSH_KEY" > "$HOME/.ssh/project.pem"
+          chmod 600 "$HOME/.ssh/project.pem"
 
-          ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts
+          ssh-keyscan -H "$EC2_HOST" >> "$HOME/.ssh/known_hosts"
 
-          ssh -i ~/.ssh/project.pem "$EC2_USER@$EC2_HOST" << EOF
+          ssh -i "$HOME/.ssh/project.pem" "$EC2_USER@$EC2_HOST" << EOF
 
             echo "Pulling new DG-Hub image..."
 
@@ -85,3 +85,4 @@ jobs:
             echo "Deployment completed!"
 
           EOF
+
