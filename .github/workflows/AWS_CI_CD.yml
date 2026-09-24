@@ -1,88 +1,76 @@
 name: DG-Hub AWS CI/CD
 
 on:
-  push:
-    branches:
-      - main
+push:
+branches:
+- main
 
 jobs:
 
-  build-and-push:
-    runs-on: ubuntu-latest
+build-and-push:
+runs-on: ubuntu-latest
 
-    steps:
+steps:
 
-      - name: Checkout code
-        uses: actions/checkout@v4
+  - name: Checkout code
+    uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
+  - name: Setup Node.js
+    uses: actions/setup-node@v4
+    with:
+      node-version: 20
+      cache: npm
 
-      - name: Install dependencies
-        run: npm ci
+  - name: Install dependencies
+    run: npm ci
 
-      - name: Build application
-        run: npm run build
+  - name: Build application
+    run: npm run build
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+  - name: Login to Docker Hub
+    uses: docker/login-action@v3
+    with:
+      username: ${{ secrets.DOCKERHUB_USERNAME }}
+      password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push Docker image
-        run: |
-          docker build -t muhammadusamasaeed/dg-hub:${{ github.sha }} .
-          docker push muhammadusamasaeed/dg-hub:${{ github.sha }}
+  - name: Build and push Docker image
+    run: |
+      docker build -t muhammadusamasaeed/dg-hub:${{ github.sha }} .
+      docker push muhammadusamasaeed/dg-hub:${{ github.sha }}
 
+deploy:
+needs: build-and-push
+runs-on: ubuntu-latest
 
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
+steps:
 
-    steps:
+  - name: Test SSH key
+    env:
+      EC2_HOST: ${{ secrets.EC2_HOST }}
+      EC2_USER: ${{ secrets.EC2_USER }}
+      EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
 
-      - name: Deploy to AWS EC2
-        env:
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-          EC2_USER: ${{ secrets.EC2_USER }}
-          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
+    run: |
 
-          mkdir -p "$HOME/.ssh"
+      mkdir -p "$HOME/.ssh"
 
-          echo "$EC2_SSH_KEY" > "$HOME/.ssh/project.pem"
-          chmod 600 "$HOME/.ssh/project.pem"
+      printf '%s\n' "$EC2_SSH_KEY" > "$HOME/.ssh/project.pem"
 
-          ssh-keyscan -H "$EC2_HOST" >> "$HOME/.ssh/known_hosts"
+      chmod 600 "$HOME/.ssh/project.pem"
 
-          ssh -i "$HOME/.ssh/project.pem" "$EC2_USER@$EC2_HOST" << EOF
+      echo "Checking SSH key format..."
 
-            echo "Pulling new DG-Hub image..."
+      ssh-keygen -y -f "$HOME/.ssh/project.pem" > /dev/null
 
-            docker pull muhammadusamasaeed/dg-hub:$IMAGE_TAG
+      echo "SSH key format is valid."
 
-            echo "Stopping old container..."
+      ssh-keyscan -H "$EC2_HOST" >> "$HOME/.ssh/known_hosts"
 
-            docker stop dg-hub || true
+      echo "Testing SSH authentication..."
 
-            echo "Removing old container..."
-
-            docker rm dg-hub || true
-
-            echo "Starting new container..."
-
-            docker run -d \
-              --name dg-hub \
-              --restart unless-stopped \
-              -p 80:80 \
-              muhammadusamasaeed/dg-hub:$IMAGE_TAG
-
-            echo "Deployment completed!"
-
-          EOF
-
+      ssh \
+        -o BatchMode=yes \
+        -o StrictHostKeyChecking=yes \
+        -i "$HOME/.ssh/project.pem" \
+        "$EC2_USER@$EC2_HOST" \
+        "echo SSH authentication successful"
