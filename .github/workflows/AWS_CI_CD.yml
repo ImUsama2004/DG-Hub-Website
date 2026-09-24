@@ -1,0 +1,87 @@
+name: DG-Hub AWS CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        run: |
+          docker build -t muhammadusamasaeed/dg-hub:${{ github.sha }} .
+          docker push muhammadusamasaeed/dg-hub:${{ github.sha }}
+
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Deploy to AWS EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+
+          mkdir -p ~/.ssh
+
+          echo "$EC2_SSH_KEY" > ~/.ssh/project.pem
+          chmod 600 ~/.ssh/project.pem
+
+          ssh-keyscan -H "$EC2_HOST" >> ~/.ssh/known_hosts
+
+          ssh -i ~/.ssh/project.pem "$EC2_USER@$EC2_HOST" << EOF
+
+            echo "Pulling new DG-Hub image..."
+
+            docker pull muhammadusamasaeed/dg-hub:$IMAGE_TAG
+
+            echo "Stopping old container..."
+
+            docker stop dg-hub || true
+
+            echo "Removing old container..."
+
+            docker rm dg-hub || true
+
+            echo "Starting new container..."
+
+            docker run -d \
+              --name dg-hub \
+              --restart unless-stopped \
+              -p 80:80 \
+              muhammadusamasaeed/dg-hub:$IMAGE_TAG
+
+            echo "Deployment completed!"
+
+          EOF
