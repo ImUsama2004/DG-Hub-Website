@@ -9,6 +9,7 @@ resource "aws_security_group" "dg_hub" {
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
   ingress {
     description = "Allow SSH"
     from_port   = 22
@@ -17,4 +18,11 @@ resource "aws_security_group" "dg_hub" {
     cidr_blocks = [var.ssh_allowed_ip]
   }
 
+  egress {
+    description = "Allow all outbound traffic"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
