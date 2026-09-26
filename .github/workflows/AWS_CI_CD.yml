@@ -72,7 +72,15 @@ jobs:
               "docker rm dg-hub || true",
               "echo Starting new container...",
               "docker run -d --name dg-hub --restart unless-stopped -p 80:80 muhammadusamasaeed/dg-hub:'"$IMAGE_TAG"'",
-              "echo Deployment completed!"
+              "echo Waiting for application to start...",
+              "sleep 5",
+              "echo Checking DG-Hub container...",
+              "docker ps --filter name=^/dg-hub$ --filter status=running --format {{.Names}} | grep -q ^dg-hub$",
+              "echo DG-Hub container is running!",
+              "echo Checking DG-Hub HTTP response...",
+              "curl -f http://localhost",
+              "echo Health check passed!",
+              "echo Deployment completed successfully!"
             ]' \
             --comment "DG-Hub deployment $IMAGE_TAG" \
             --query "Command.CommandId" \
@@ -93,14 +101,14 @@ jobs:
             echo "Deployment status: $STATUS"
 
             if [ "$STATUS" = "Success" ]; then
-              echo "Deployment successful!"
+              echo "Deployment and health verification successful!"
               exit 0
             fi
 
             if [ "$STATUS" = "Failed" ] || \
                [ "$STATUS" = "Cancelled" ] || \
                [ "$STATUS" = "TimedOut" ]; then
-              echo "Deployment failed!"
+              echo "Deployment or health verification failed!"
               exit 1
             fi
 
@@ -109,4 +117,3 @@ jobs:
 
           echo "Deployment timed out!"
           exit 1
-

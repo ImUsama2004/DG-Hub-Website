@@ -27,10 +27,10 @@ variable "security_group_name" {
   default     = "dg-hub-sg"
 }
 
-variable "ssh_allowed_ip" {
-  description = "Public IP address allowed to connect to the EC2 instance through SSH"
-  type        = string
-}
+#variable "ssh_allowed_ip" {
+#  description = "Public IP address allowed to connect to the EC2 instance through SSH"
+#  type        = string
+#}
 
 variable "key_name" {
   description = "Name of the AWS EC2 key pair"
