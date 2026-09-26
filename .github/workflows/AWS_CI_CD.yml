@@ -80,6 +80,10 @@ jobs:
               "echo Checking DG-Hub HTTP response...",
               "curl -f http://localhost",
               "echo Health check passed!",
+              "echo Cleaning up old DG-Hub images...",
+              "CURRENT_IMAGE=$(docker inspect dg-hub --format '{{.Image}}')",
+              "docker images 'muhammadusamasaeed/dg-hub' --format '{{.ID}}' | sort -u | grep -v \"$CURRENT_IMAGE\" | xargs -r docker rmi",
+              "echo Old DG-Hub images cleaned up!",
               "echo Deployment completed successfully!"
             ]' \
             --comment "DG-Hub deployment $IMAGE_TAG" \
@@ -101,14 +105,14 @@ jobs:
             echo "Deployment status: $STATUS"
 
             if [ "$STATUS" = "Success" ]; then
-              echo "Deployment and health verification successful!"
+              echo "Deployment, health verification, and cleanup successful!"
               exit 0
             fi
 
             if [ "$STATUS" = "Failed" ] || \
                [ "$STATUS" = "Cancelled" ] || \
                [ "$STATUS" = "TimedOut" ]; then
-              echo "Deployment or health verification failed!"
+              echo "Deployment, health verification, or cleanup failed!"
               exit 1
             fi
 
@@ -117,3 +121,4 @@ jobs:
 
           echo "Deployment timed out!"
           exit 1
+
